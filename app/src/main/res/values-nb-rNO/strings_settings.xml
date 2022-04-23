@@ -19,9 +19,9 @@
     <string name="pref_color_theme_title">Fargedrakt</string>
     <string name="pref_color_theme_summary">Nåværende drakt: %s</string>
 <string name="pref_screen_storage">Lagring</string>
-    <string name="pref_cat_downloads_folder">Hentoid-bibliotek</string>
+    <string name="pref_cat_downloads_folder">Hendroid-bibliotek</string>
     <string name="pref_select_folder_title">Velg nedlastingsmappe</string>
-    <string name="pref_select_folder_summary">Velg hvor Hentoid skal lagre nedlastningene dine.</string>
+    <string name="pref_select_folder_summary">Velg hvor Hendroid skal lagre nedlastningene dine.</string>
     <string name="pref_import_queue_empty_title">Legg tomme bøker i kø som feil</string>
     <string name="pref_import_queue_empty_on">Tomme bøker vil bli lagt til i køen som feil</string>
     <string name="pref_import_queue_empty_off">Tomme bøker vil bli lagt til i biblioteket</string>
@@ -39,10 +39,10 @@
     <string name="pref_external_library_title">Eksternt bibliotek</string>
     <string name="pref_external_library_summary_empty">Eksternt bibliotek er ikke satt</string>
     <string name="pref_external_library_delete_title">Tillat sletting av eksternt innhold</string>
-    <string name="pref_external_library_delete_on">Hentoid kan slette bøker og sider i det eksterne biblioteket</string>
-    <string name="pref_external_library_delete_off">Hentoid kan ikke slette bøker, og heller ikke sider i det eksterne biblioteket</string>
+    <string name="pref_external_library_delete_on">Hendroid kan slette bøker og sider i det eksterne biblioteket</string>
+    <string name="pref_external_library_delete_off">Hendroid kan ikke slette bøker, og heller ikke sider i det eksterne biblioteket</string>
     <string name="pref_external_library_detach_title">Koble fra eksternt bibliotek</string>
-    <string name="pref_external_library_detach_summary">Ikke inkluder eksternt bibliotek i Hentoid lenger</string>
+    <string name="pref_external_library_detach_summary">Ikke inkluder eksternt bibliotek i Hendroid lenger</string>
     <string name="pref_cat_advanced">Avansert</string>
     <string name="pref_refresh_library_title">Gjenoppfrisk bibliotek</string>
     <string name="pref_refresh_library_summary">Gjenoppfrisk biblioteksinnhold manuelt</string>
