@@ -598,10 +598,9 @@
     <string name="pin_lock_on_restore">Блокувати при\nповторному відкритті</string>
 
     <!-- About Activity -->
-    <string name="about1"><b>Hendroid</b> — це додаток для завантаження додзінсі і хентай-манґи. Hendroid спочатку був створений <b>Сесаром Арасакі</b>.</string>
-    <string name="personalDataStatement1"><b>ЗАЯВА ПРО КОНФІДЕНЦІЙНІСТЬ ПЕРСОНАЛЬНИХ ДАНИХ</b>\n\nHendroid — це безкоштовне програмне забезпечення з відкритим кодом, розроблене спільнотою Hendroid (приєднуйтесь до нас у Discord за лінком нижче)</string>
-    <string name="personalDataStatement2">Hendroid збирає наступні персональні дані і ділиться ними з Google для обробки за допомогою бібліотеки Firebase:\n - Ідентифікатор сесії\n - IP-адреса</string>
-    <string name="personalDataStatement3">Вищезазначені дані видаляються як з діючої, так і з запасної систем Firebase протягом 180 днів (подробиці доступні на https://firebase.google.com/support/privacy/)\n\nНіякі інші персональні дані не збираються і не передаються третім особам.</string>
+    <string name="about1"><b>Hendroid</b> — це додаток для завантаження додзінсі і хентай-манґи. Hendroid — це відгалуження (форк) популярного додатку <b>Hendroid</b>, якій спочатку був створений <b>Сесаром Арасакі</b>.</string>
+    <string name="personalDataStatement1"><b>ЗАЯВА ПРО КОНФІДЕНЦІЙНІСТЬ ПЕРСОНАЛЬНИХ ДАНИХ</b>\n\nHendroid — це безкоштовне програмне забезпечення з відкритим кодом, розроблене спільнотою Hendroid</string>
+    <string name="personalDataStatement2">Ніякі персональні дані не збираються додатком, але можуть збиратися сторонніми сайтами.</string>
     <string name="about_licenses">Показати ліцензії</string>
     <string name="about_app_version">Версія Hendroid: <x:g id="ver_name" example="1.15.20">%1$s</x:g> (<x:g id="ver_code" example="130">%2$d</x:g>)</string>
     <string name="about_chrome_version">Версія Chrome: <x:g id="chrome_ver" example="98">%1$d</x:g></string>
@@ -612,8 +611,9 @@
     <string name="web_back">Назад</string>
     <string name="web_forward">Уперед</string>
     <string name="web_bookmarks">Закладки</string>
+    <string name="web_language">Змінити мову</string>
     <string name="web_refresh_stop">Оновити/зупинити</string>
-    <string name="web_copy_url">Скопіювати адресу</string>
+    <string name="web_open_browser">Відкрити в браузері</string>
     <string name="web_download">Завантажити</string>
     <string name="web_unparsable">Цей контент не може бути завантажений. Соррі~</string>
     <string name="web_url_clipboard">URL скопійовано в буфер обміну</string>

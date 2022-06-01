@@ -1,0 +1,30 @@
+New
+
+    Support for Multporn.net
+    Manhwa Hentai, Toonily, H2R, Manhwa18 : Single chapters can now be downloaded
+    Browser : New "Replace existing book" option on the "Download duplicate" dialog
+    Library : Books and groups can now be given a rating (from * to *****)
+    Tools : New feature to clear all cookies
+
+Changed
+
+    External library : Resample external archive covers when importing them (saves a lot of storage on large collections)
+    Browser : Disabling "Augmented browser" now doesn't block any domain anymore including Google Analytics (some sites were being nasty and blocking content because of GA being disabled)
+    Library : Sort/filter bottom sheet is display in expanded mode by default
+    Reader : Archives are now extracted on demand while you're reading (reduces the startup extraction time, especially for big archives)
+
+Fixes
+
+    External library : Prevent duplicating extracted archive covers when refreshing the external library
+    Settings : Fix primary folder path not being correctly displayed on some devices / volumes (e.g. USB drive)
+    Library : Fix multi-selection to allow mass-deleting external books
+    Library / Reader : Align random ordering between library and reader
+    Advanced search : Fix language filter not working in non-english locales
+    Reader : Vertical (top to bottom) mode now correctly renders hi-res pictures when zooming
+    Reader : Vertical (top to bottom) mode now correctly displays the zoom level on the picture bottom panel
+    Reader : Hide label after choosing a slideshow delay
+
+Technical
+
+    Optimized metadata export for large libraries
+    Optimized primary library import for large libraries

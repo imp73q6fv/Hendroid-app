@@ -593,7 +593,9 @@
     <string name="pin_lock_on_restore">Блокировать при\nповторном открытии</string>
 
     <!-- About Activity -->
-    <string name="about1"><b>Hendroid</b> — это приложение для скачивания додзинси и хентай-манги. Hendroid изначально был создан <b>Сесаром Арасаки</b>.</string>
+    <string name="about1"><b>Hendroid</b> — это приложение для скачивания додзинси и хентай-манги. Hendroid является ответвлением (форком) приложения <b>Hendroid</b>, которое изначально было создано <b>Сесаром Арасаки</b>.</string>
+    <string name="personalDataStatement1"><b>ЗАЯВЛЕНИЕ О КОНФИДЕНЦИАЛЬНОСТИ ПЕРСОНАЛЬНЫХ ДАННЫХ</b>\n\nHendroid — это бесплатное програмное обеспечение с открытым исходным кодом, разрабатываемое сообществом Hendroid</string>
+    <string name="personalDataStatement2">Никакие персональные данные не собираются приложением, но могут собираться сторонними сайтами.</string>
     <string name="about_licenses">Показать лицензии</string>
     <string name="about_app_version">Версия Hendroid: <x:g id="ver_name" example="1.15.20">%1$s</x:g> (<x:g id="ver_code" example="130">%2$d</x:g>)</string>
     <string name="about_chrome_version">Версия Chrome: <x:g id="chrome_ver" example="98">%1$d</x:g></string>
@@ -604,7 +606,9 @@
     <string name="web_back">Назад</string>
     <string name="web_forward">Вперёд</string>
     <string name="web_bookmarks">Закладки</string>
+    <string name="web_language">Изменить язык</string>
     <string name="web_refresh_stop">Обновить/остановить</string>
+    <string name="web_open_browser">Открыть в браузере</string>
     <string name="web_download">Загрузить</string>
     <string name="web_unparsable">Этот контент не может быть загружен. Сорри~</string>
     <string name="web_url_clipboard">URL скопирован в буфер обмена</string>

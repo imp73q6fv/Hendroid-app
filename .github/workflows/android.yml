@@ -1,0 +1,38 @@
+name: Android CI
+
+on: [ push, pull_request ]
+
+jobs:
+  build_apk:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: 11
+        distribution: temurin
+
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@main
+      with:
+        arguments: packageRelease
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v3
+      with:
+        path: app/build/outputs/apk/release/*.apk
+        retention-days: 14
+        if-no-files-found: error
+
+    # - name: Automatically create release
+    #   if: |
+    #     github.event_name != 'pull_request' &&
+    #     github.repository == 'Nonononoki/Hendroid'
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     release_ver: 1.16
+    #   run: gh release create ${{ env.release_ver }}.${{ GITHUB.RUN_NUMBER }} app/build/outputs/apk/release/*.apk --target ${{ GITHUB.SHA }} -t ${{ env.release_ver }}.${{ GITHUB.RUN_NUMBER }}
