@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="slide_01_header">Добро пожаловать в Hentoid!</string>
-    <string name="slide_01_text">Hentoid — это приложение для скачивания\nдодзинси и хентай-манги.</string>
+    <string name="slide_01_header">Добро пожаловать в Hendroid!</string>
+    <string name="slide_01_text">Hendroid — это приложение для скачивания\nдодзинси и хентай-манги.</string>
     <string name="slide_02_header">Разрешения</string>
     <string name="slide_02_text">Нам необходимо ваше разрешение, чтобы хранить файлы на устройстве.</string>
     <string name="slide_04_header">Библиотека</string>
-    <string name="slide_04_text">Hentoid необходима отдельная папка для хранения ваших файлов.</string>
+    <string name="slide_04_text">Hendroid необходима отдельная папка для хранения ваших файлов.</string>
 <string name="slide_04_skip">Пропустить</string>
 <string name="slide_04_skip_title">Пропустить\?</string>
     <string name="slide_04_skip_msg">Вы не сможете ничего загрузить, если пропустите этот шаг.\nДля загрузки вам понадобится выбрать папку загрузок в настройках приложения.</string>

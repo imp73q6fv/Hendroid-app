@@ -43,8 +43,8 @@
     <string name="title_activity_app_lock">Blocco app</string>
     <string name="title_activity_search">Ricerca avanzata</string>
 <string name="api29_migration_title">Hendroid v12 \nAggiornamento gestione file</string>
-    <string name="api29_migration_subtitle">Hentoid sta aggiornando la tua raccolta. \nPotrebbero essere necessari alcuni minuti.</string>
-    <string name="api29_migration_location">L\'attuale posizione della cartelle di Hentoid è \n<x:g example="/storage/emulated/0/Hendroid" id="path">%s</x:g></string>
+    <string name="api29_migration_subtitle">Hendroid sta aggiornando la tua raccolta. \nPotrebbero essere necessari alcuni minuti.</string>
+    <string name="api29_migration_location">L\'attuale posizione della cartelle di Hendroid è \n<x:g example="/storage/emulated/0/Hendroid" id="path">%s</x:g></string>
     <string name="api29_migration_step1">Cartella Hendroid</string>
     <string name="api29_migration_step1_external">Cartella esterna</string>
     <string name="api29_migration_step1_select">Seleziona la cartella Hendroid</string>
@@ -127,6 +127,8 @@
     <string name="step_save_queue">Salvataggio della coda</string>
     <string name="step_wait_purge">Aspetta che l\'eleminazione finisca</string>
     <string name="step_start_download">Download della coda iniziato !</string>
+    <string name="step_complete_download">Download completato</string>
+    <string name="step_remove_duplicate">Sostituendo duplicato</string>
     <string name="help_swipe_cancel">Puoi annullare i download scorrendoli verso sinistra</string>
     <string name="redownloaded_error">Si è verificato un problema durante il nuovo download - annullato</string>
     <plurals name="redownloaded_scratch">
@@ -151,7 +153,7 @@
     <string name="queue_bottom_bar_speed" tools:ignore="MissingTranslation"><x:g example="/102.4" id="formatted_speed_kbps">%d</x:g> KBps</string>
     <string name="download_notif_speed" tools:ignore="MissingTranslation"><x:g example="3.88" id="size_dled">%1$d</x:g><x:g example="/14.56" id="formatted_estimated_total">%2$s</x:g> MB a <x:g example="102.4" id="speed_kbps">%3$d</x:g> KBps</string>
     <string name="download_notif_failed">Attenzione: download fallito</string>
-    <string name="download_notif_failed_details">Impossibile scaricare <x:g example="Cool H-Manga" id="book_name">%1$s</x:g> : impossibile creare cartella <x:g example="/storage/emulated/0/Hentoid/nhentai/coolhmanga" id="path">%2$s</x:g> . Perfavore controlla la tua cartella Hentoid e riprova a scaricare usando il pulsante \'!\'.</string>
+    <string name="download_notif_failed_details">Impossibile scaricare <x:g example="Cool H-Manga" id="book_name">%1$s</x:g> : impossibile creare cartella <x:g example="/storage/emulated/0/Hendroid/nhentai/coolhmanga" id="path">%2$s</x:g> . Perfavore controlla la tua cartella Hendroid e riprova a scaricare usando il pulsante \'!\'.</string>
 <string name="work_series">Serie: <x:g example="original" id="series">%s</x:g></string>
     <string name="work_artist">Artista: <x:g example="hayao miyazaki" id="artist">%s</x:g></string>
     <plurals name="work_pages_missing">
@@ -246,6 +248,7 @@
     <string name="export_warning1">L\'esportazione del metadata ha lo scopo di creare una lista dei tuoi libri in formato JSON. \nNon è pensata per muovere la tua collezione sul tuo Pc o sulla tua scheda SD. \nClicca qui per scoprire come farlo.</string>
     <string name="export_warning2">I libri vengono esportati senza immagini. \nDovrai scaricarli di nuovo al ripristino se la cartella delle immagini non è presente.</string>
     <string name="export_run">Esegui esportazione</string>
+    <string name="export_failed">Esportazione fallita</string>
     <string name="import_settings_title">Importa impostazioni</string>
     <string name="import_settings_success">Importati</string>
 <string name="permissioncomplaint_snackbar">È necessario concedere i permessi prima di poter continuare</string>
@@ -255,11 +258,12 @@
     <string name="import_app_folder">Non è possibile selezionare la cartella dell\'app come cartella esterna: selezionarne un\'altra</string>
     <string name="import_download_folder">Non dovresti selezionare la cartella di download del tuo dispositivo: crea o selezionane un\'altra</string>
     <string name="import_create_fail">Creazione della cartella Hendroid fallita - seleziona un\'altra posizione</string>
+    <string name="import_invalid_uri">Cartella non riconosciuta - per favore selezionala di nuovo</string>
     <string name="import_other">L\'importazione è stata interrotta</string>
     <string name="import_unexpected">L\'importazione si è fermata inaspettatamente</string>
     <string name="task_done">Attività completata: vedi i dettagli nel registro</string>
     <string name="content_not_found">Errore - contenuto non trovato</string>
-    <string name="contents_detected">Hentoid ha riconosciuto una libreria esistente in questa posizione. \nVuoi importare questa libreria\?</string>
+    <string name="contents_detected">Hendroid ha riconosciuto una libreria esistente in questa posizione. \nVuoi importare questa libreria\?</string>
     <string name="library_imports_title">Importazione delle librerie</string>
     <string name="starting_import">Inizio importazione…</string>
     <string name="importing_library">Importando la libreria</string>
@@ -275,8 +279,8 @@
 <string name="memory_title">Utilizzo della memoria</string>
     <string name="memory_total">Totale: <x:g example="100 MB" id="total">%s</x:g></string>
     <string name="memory_free">Libero: <x:g example="50 MB" id="total">%s</x:g></string>
-    <string name="memory_hentoid_main">Hentoid (principale): <x:g example="2 MB" id="total">%s</x:g></string>
-    <string name="memory_hentoid_ext">Hentoid (esterno): <x:g example="3 MB" id="total">%s</x:g></string>
+    <string name="memory_hentoid_main">Hendroid (principale): <x:g example="2 MB" id="total">%s</x:g></string>
+    <string name="memory_hentoid_ext">Hendroid (esterno): <x:g example="3 MB" id="total">%s</x:g></string>
     <string name="memory_database">Database <x:g example="1.52 MB" id="size_mb">%1$s</x:g> (<x:g example="40%" id="percentage">%2$.1f%%</x:g> pieno)</string>
     <string name="memory_details">Visualizza dettagli (principale)</string>
     <string name="memory_details_source">Fonte</string>
@@ -423,6 +427,7 @@ Questo libro sarà ignorato.</item>
         <item quantity="other">Elimina gruppi + libri</item>
     </plurals>
     <string name="group_delete_nothing">Niente da eliminare - seleziona Consenti l\'eleminazione di contenuti esterni per cambiarlo</string>
+    <string name="clear_rating">Rimuovi voto</string>
 <string name="merge_merge">Unisci</string>
     <string name="merge_progress">Unendo i libri…</string>
     <string name="split_progress">Dividendo il libro…</string>
@@ -460,12 +465,14 @@ Questo libro sarà ignorato.</item>
     <string name="library_filter_favourite_help">Attiva/disattiva visualizzazione dei libri preferiti</string>
     <string name="filter_completed">Mostra solo libri finiti</string>
     <string name="filter_not_completed">Mostra solo libri non finiti</string>
+    <string name="filter_rating">Filtra da voti</string>
 <string name="display_groups_title">Mostra gruppi</string>
     <string name="display">Mostra</string>
     <string name="display_artists">Artisti</string>
     <string name="display_groups">Gruppi</string>
 <string name="drag_help">Trascina elemento</string>
     <string name="external_help">Appartiene alla libreria esterna</string>
+    <string name="rating_help">Voto libro</string>
     <string name="streamed_help">Libro in streaming</string>
     <string name="view_source_help">Visualizza sorgente nel browser</string>
     <string name="fav_help">Segna/deseleziona come preferito</string>
@@ -491,11 +498,11 @@ Questo libro sarà ignorato.</item>
     <string name="pin_new_confirm">Conferma il nuovo PIN</string>
     <string name="pin_explanation">Il blocco app impedisce l\'uso non autorizzato di questa app richiedendo un PIN di 4 cifre all\'avvio</string>
     <string name="pin_lock_on_restore">Blocca quando aperto \ndallo schermo principale</string>
-<string name="about1"><b>Hentoid</b> è un\'app per archiviare Doujinshi e H-manga. Hentoid è stato originariamente creato da <b>Cesar Arasaki</b>.</string>
+<string name="about1"><b>Hendroid</b> è un\'app per archiviare Doujinshi e H-manga. Hendroid è stato originariamente creato da <b>Cesar Arasaki</b>.</string>
     <string name="personalDataStatement1"><b>PERSONAL DATA PRIVACY STATEMENT</b>\n\nHendroid is a free and open-source software maintained by the Hendroid Community</string>
     <string name="personalDataStatement2">No personal data is collected by the app, but may be collected by external sites.</string>    
     <string name="about_licenses">Visualizza licenze</string>
-    <string name="about_app_version" tools:ignore="MissingTranslation">Hentoid v<x:g example="1.15.20" id="ver_name">%1$s</x:g> (<x:g example="130" id="ver_code">%2$d</x:g>)</string>
+    <string name="about_app_version" tools:ignore="MissingTranslation">Hendroid v<x:g example="1.15.20" id="ver_name">%1$s</x:g> (<x:g example="130" id="ver_code">%2$d</x:g>)</string>
     <string name="about_chrome_version" tools:ignore="MissingTranslation">Chrome v<x:g example="98" id="chrome_ver">%1$d</x:g></string>
 <string name="web_gallery">Torna all\'ultima pagina della galleria</string>
     <string name="web_home">Torna alla libreria</string>
@@ -585,6 +592,7 @@ Questo libro sarà ignorato.</item>
     <string name="viewer_ask_cover">Impostare questa pagina come copertina del libro?</string>
     <string name="image_not_found">Immagine non trovata</string>
     <string name="image_streaming">Immagine in streaming…</string>
+    <string name="image_extracting">Estraendo immagine...</string>
     <string name="book_prefs">Impostazioni libro</string>
     <string name="goto_app_prefs">Impostazioni app</string>
     <string name="use_app_prefs">Utilizza impostazioni app (<x:g example="Left to right" id="app_default">%s</x:g>)</string>
@@ -670,6 +678,7 @@ Questo libro sarà ignorato.</item>
     <string name="duplicate_alert_always_download">Scarica sempre e non chiederlo più</string>
     <string name="duplicate_alert_never_extra_on_dupes">Non aggiungere mai più pagine da potenziali duplicati</string>
     <string name="duplicate_alert_similarity">Similitudine: <x:g example="50%" id="similarity_percentage">%.0f%%</x:g></string>
+    <string name="duplicate_alert_replace_existing">Sostituendo libro esistente</string>
     <string name="duplicate_alert_download_book">Scarica libro</string>
     <string name="duplicate_alert_download_pages">Scarica pagine extra</string>
     <string name="duplicate_wait_index">Indicizzazione…</string>

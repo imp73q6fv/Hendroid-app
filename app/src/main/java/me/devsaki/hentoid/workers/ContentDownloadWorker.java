@@ -3,10 +3,10 @@ package me.devsaki.hentoid.workers;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
-import android.util.Pair;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.work.Data;
 import androidx.work.WorkerParameters;
@@ -81,6 +81,7 @@ import me.devsaki.hentoid.util.download.RequestOrder;
 import me.devsaki.hentoid.util.download.RequestQueueManager;
 import me.devsaki.hentoid.util.exception.AccountException;
 import me.devsaki.hentoid.util.exception.CaptchaException;
+import me.devsaki.hentoid.util.exception.ContentNotProcessedException;
 import me.devsaki.hentoid.util.exception.EmptyResultException;
 import me.devsaki.hentoid.util.exception.LimitReachedException;
 import me.devsaki.hentoid.util.exception.PreparationInterruptedException;
@@ -179,11 +180,12 @@ public class ContentDownloadWorker extends BaseWorker {
 
     /**
      * Start the download of the 1st book of the download queue
-     * <p>
      * NB : This method is not only called the 1st time the queue is awakened,
      * but also after every book has finished downloading
      *
-     * @return 1st book of the download queue; null if no book is available to download
+     * @return Pair containing
+     * - Left : Result of the processing
+     * - Right : 1st book of the download queue; null if no book is available to download
      */
     @SuppressLint({"TimberExceptionLogging", "TimberArgCount"})
     @NonNull
@@ -665,6 +667,8 @@ public class ContentDownloadWorker extends BaseWorker {
             return;
         }
 
+        EventBus.getDefault().post(DownloadEvent.fromPreparationStep(DownloadEvent.Step.COMPLETE_DOWNLOAD));
+
         if (!downloadInterrupted.get()) {
             List<ImageFile> images = content.getImageFiles();
             if (null == images) images = Collections.emptyList();
@@ -733,6 +737,16 @@ public class ContentDownloadWorker extends BaseWorker {
                     content.setDownloadParams("");
                     content.setDownloadCompletionDate(Instant.now().toEpochMilli());
                     content.setStatus(StatusContent.DOWNLOADED);
+
+                    // Delete the duplicate book that was meant to be replaced
+                    if (!content.getContentToReplace().isNull()) {
+                        EventBus.getDefault().post(DownloadEvent.fromPreparationStep(DownloadEvent.Step.REMOVE_DUPLICATE));
+                        try {
+                            ContentHelper.removeContent(getApplicationContext(), dao, content.getContentToReplace().getTarget());
+                        } catch (ContentNotProcessedException e) {
+                            Timber.w(e);
+                        }
+                    }
                 } else {
                     content.setStatus(StatusContent.ERROR);
                 }
@@ -904,7 +918,7 @@ public class ContentDownloadWorker extends BaseWorker {
             @NonNull Map<String, String> requestHeaders) {
 
         // If the queue is being reset, ignore the error
-        if (requestQueueManager.isInit()) return;
+        if (requestQueueManager.hasRemainingIgnorableErrors()) return;
 
         // Try with the backup URL, if it exists and if the current image isn't a backup itself
         if (!img.isBackup() && !backupUrl.isEmpty()) {
@@ -1022,9 +1036,8 @@ public class ContentDownloadWorker extends BaseWorker {
                 ArchiveHelper.extractArchiveEntries(
                         getApplicationContext(),
                         Uri.fromFile(result.left),
-                        null, // Extract everything
                         ugoiraCacheFolder,
-                        null,
+                        null, // Extract everything; keep original names
                         downloadInterrupted,
                         null
                 );

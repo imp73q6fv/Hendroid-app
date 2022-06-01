@@ -6,7 +6,7 @@ Any HTML comment like this will be stripped when rendering markdown, no need to 
 If an issue does not have the following template filled out, it will be closed without discussion.
 -->
 
-<!-- What version of Hentoid you're running, for example: 1.2.0r3 | 1.2.1r1 | 1.2.1r2
+<!-- What version of Hendroid you're running, for example: 1.2.0r3 | 1.2.1r1 | 1.2.1r2
 It's essentially the version number from the About Screen -->
 **Hendroid Version**:
 

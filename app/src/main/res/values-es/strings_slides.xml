@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="slide_01_header">¡Bienvenido a Hendroid!</string>
-    <string name="slide_01_text">Hentoid es una aplicación para archivar Doujinshi y manga Hentai.</string>
+    <string name="slide_01_text">Hendroid es una aplicación para archivar Doujinshi y manga Hentai.</string>
     <string name="slide_02_header">Permisos</string>
     <string name="slide_02_text">Necesitamos de tu permiso para que se pueda almacenar archivos en tu dispositivo.</string>
     <string name="slide_04_header">Librería</string>
-    <string name="slide_04_text">Hentoid requiere una carpeta dedicada para almacenar tus archivos.</string>
+    <string name="slide_04_text">Hendroid requiere una carpeta dedicada para almacenar tus archivos.</string>
 <string name="slide_04_skip">Omitir</string>
 <string name="slide_04_skip_title">¿Omitir?</string>
     <string name="slide_04_skip_msg">No se podrá hacer una descarga si omites este paso. Para hacer una descarga tendrás que configurar una carpeta desde la configuración de la aplicación.</string>

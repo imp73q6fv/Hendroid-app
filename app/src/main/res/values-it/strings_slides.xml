@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="slide_01_header">Benvenuto su Hentoid!</string>
-    <string name="slide_01_text">Hentoid è un app di archiviazione per\n&amp; Doujinshi e H-manga.</string>
+    <string name="slide_01_header">Benvenuto su Hendroid!</string>
+    <string name="slide_01_text">Hendroid è un app di archiviazione per\n&amp; Doujinshi e H-manga.</string>
     <string name="slide_02_header">Permessi</string>
     <string name="slide_02_text">Dobbiamo chiederti l\'autorizzazione per archiviare i file sul tuo dispositivo.</string>
     <string name="slide_04_header">Libreria</string>
-    <string name="slide_04_text">Hentoid richiede una cartella dedicata per salvare i vostri media.</string>
+    <string name="slide_04_text">Hendroid richiede una cartella dedicata per salvare i vostri media.</string>
 <string name="slide_04_skip">Salta</string>
 <string name="slide_04_skip_title">Saltare\?</string>
     <string name="slide_04_skip_msg">Non potrai scaricare se salti questo passaggio.\nPer scaricare, dovrai impostare la cartella di download tramite le impostazioni dell\'app.</string>

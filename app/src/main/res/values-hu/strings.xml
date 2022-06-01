@@ -40,18 +40,18 @@
     <string name="title_activity_about">Névjegy</string>
     <string name="title_activity_app_lock">Alkalmazászár</string>
     <string name="title_activity_search">Haladó keresés</string>
-<string name="api29_migration_title">Hentoid v12\nFájlkezelői frissítés</string>
-    <string name="api29_migration_subtitle">Hentoid frissíti az Ön gyűjteményét.\Ehhez szükség van pár percre.</string>
-    <string name="api29_migration_location">Jelenlegi Hentoid mappa elérési útvonala\n<x:g id="path" example="/storage/emulated/0/Hentoid">%s</x:g></string>
-    <string name="api29_migration_step1">Hentoid mappa</string>
+<string name="api29_migration_title">Hendroid v12\nFájlkezelői frissítés</string>
+    <string name="api29_migration_subtitle">Hendroid frissíti az Ön gyűjteményét.\Ehhez szükség van pár percre.</string>
+    <string name="api29_migration_location">Jelenlegi Hendroid mappa elérési útvonala\n<x:g id="path" example="/storage/emulated/0/Hendroid">%s</x:g></string>
+    <string name="api29_migration_step1">Hendroid mappa</string>
     <string name="api29_migration_step1_external">Külső mappa</string>
-    <string name="api29_migration_step1_select">Hentoid mappa kiválasztása</string>
+    <string name="api29_migration_step1_select">Hendroid mappa kiválasztása</string>
     <string name="api29_migration_step1_select_external">Külső mappa kiválasztása</string>
     <string name="api29_migration_step2">Webhely mappáinak beolvasása</string>
     <string name="api29_migration_step3_init">Könyvtár beolvasása…</string>
     <string name="api29_migration_step3">Könyvtár beolvasása (<x:g id="number" example="1">%1$d</x:g> / <x:g id="total" example="7">%2$d</x:g>)</string>
     <string name="api29_migration_step4_init">A várólista importálása…</string>
-    <string name="api29_migration_select_folder">Kérjük, válasszon egy már létező Hentoid mappát. A mappa helye megjelenik a képernyőn.</string>
+    <string name="api29_migration_select_folder">Kérjük, válasszon egy már létező Hendroid mappát. A mappa helye megjelenik a képernyőn.</string>
     <string name="api29_migration_allow_write">Kérjük, engedélyezze az írási jogosultságot</string>
 <string name="menu_search">Keresés</string>
     <string name="menu_fav">Kedvencek szűrése</string>
@@ -148,7 +148,7 @@
     <string name="queue_bottom_bar_speed" tools:ignore="MissingTranslation"><x:g id="formatted_speed_kbps" example="/102.4">%d</x:g> KBps</string>
     <string name="download_notif_speed" tools:ignore="MissingTranslation"><x:g id="size_dled" example="3.88">%1$d</x:g><x:g id="formatted_estimated_total" example="/14.56">%2$s</x:g> MB @ <x:g id="speed_kbps" example="102.4">%3$d</x:g> KBps</string>
     <string name="download_notif_failed">A letöltés sikertelen</string>
-    <string name="download_notif_failed_details">Nem tudjuk letölteni <x:g id="book_name" example="Cool H-Manga">%1$s</x:g> könyvet: nem tudjuk létrehozni a mappát <x:g id="path" example="/storage/emulated/0/Hentoid/nhentai/coolhmanga">%2$s</x:g>. Kérjük, ellenőrizze a Hentoid mappáját, és próbálja meg újra a letöltést a \'!\' gomb segítségével.</string>
+    <string name="download_notif_failed_details">Nem tudjuk letölteni <x:g id="book_name" example="Cool H-Manga">%1$s</x:g> könyvet: nem tudjuk létrehozni a mappát <x:g id="path" example="/storage/emulated/0/Hendroid/nhentai/coolhmanga">%2$s</x:g>. Kérjük, ellenőrizze a Hendroid mappáját, és próbálja meg újra a letöltést a \'!\' gomb segítségével.</string>
 <string name="work_series">Sorozat: <x:g id="series" example="original">%s</x:g></string>
     <string name="work_artist">Szerző: <x:g id="artist" example="hayao miyazaki">%s</x:g></string>
     <plurals name="work_pages_missing">
@@ -176,7 +176,7 @@
 <string name="refresh_title">Könyvtár újratöltése</string>
     <string name="refresh_caption">A könyvtári adatok automatikus frissítése a fájlok és mappák újbóli beolvasásával.</string>
     <string name="refresh_options">Tisztítási lehetőségek</string>
-    <string name="refresh_location_internal">Hentoid könyvtár</string>
+    <string name="refresh_location_internal">Hendroid könyvtár</string>
     <string name="refresh_location_external">Külső könyvtár</string>
     <string name="refresh_options_rename">Az összes mappa átnevezése az aktuális elnevezési és maximális hosszúsági beállításoknak megfelelően</string>
     <string name="refresh_options_remove">Távolítsa el a mappákat, ahol…</string>
@@ -251,12 +251,12 @@
     <string name="import_invalid">Érvénytelen mappa kiválasztva - kérjük, válasszon egy másikat</string>
     <string name="import_app_folder">Az alkalmazás mappáját nem lehet külső mappaként kiválasztani - kérjük, válasszon egy másikat.</string>
     <string name="import_download_folder">Ne válassza ki az eszköz letöltési mappáját - kérjük, hogy készítsen egy másik mappát vagy válasszon egy másikat.</string>
-    <string name="import_create_fail">Hentoid mappa létrehozása sikertelen - kérjük, válasszon másik helyet</string>
+    <string name="import_create_fail">Hendroid mappa létrehozása sikertelen - kérjük, válasszon másik helyet</string>
     <string name="import_other">Az importálás megállt</string>
     <string name="import_unexpected">Az importálás váratlanul megállt</string>
     <string name="task_done">Feladat elvégezve - a naplófájlban megtekintheti a a részleteket</string>
     <string name="content_not_found">Hiba - A tartalom nem található</string>
-    <string name="contents_detected">A Hentoid felismert ezen a helyen egy már létező könyvtárat.\Szeretné importálni azt\?</string>
+    <string name="contents_detected">A Hendroid felismert ezen a helyen egy már létező könyvtárat.\Szeretné importálni azt\?</string>
     <string name="library_imports_title">Importált könyvtárak</string>
     <string name="starting_import">Importálás elkezdése</string>
     <string name="importing_library">Könyvtár importálása</string>
@@ -272,8 +272,8 @@
 <string name="memory_title">Memória használat</string>
     <string name="memory_total">Összesen: <x:g id="total" example="100 MB">%s</x:g></string>
     <string name="memory_free">Szabad: <x:g id="total" example="50 MB">%s</x:g></string>
-    <string name="memory_hentoid_main">Hentoid (elsődleges): <x:g id="total" example="2 MB">%s</x:g></string>
-    <string name="memory_hentoid_ext">Hentoid (külső): <x:g id="total" example="3 MB">%s</x:g></string>
+    <string name="memory_hentoid_main">Hendroid (elsődleges): <x:g id="total" example="2 MB">%s</x:g></string>
+    <string name="memory_hentoid_ext">Hendroid (külső): <x:g id="total" example="3 MB">%s</x:g></string>
     <string name="memory_database">Adatbázis: <x:g id="size_mb" example="1.52 MB">%1$s</x:g> (<x:g id="percentage" example="40%">%2$.1f%%</x:g> tele)</string>
     <string name="memory_details">Részletek megtekintése (elsődleges)</string>
     <string name="memory_details_source">Forrás</string>
@@ -287,7 +287,7 @@
     <string name="log_import_external">Külső könyvtár importálása/frissítése</string>
     <string name="log_import">Elsődleges könyvtár importálása/frissítése</string>
     <string name="log_cleanup">Elsődleges könyvtár takarítása</string>
-    <string name="log_api29_migration">Könyvtár migrálása a Hentoid v1.11-es veriójából</string>
+    <string name="log_api29_migration">Könyvtár migrálása a Hendroid v1.11-es veriójából</string>
 <string name="error_write_permission">Nincs jogosultsága írni abba a mappába, próbáljon meg egy másik mappát.</string>
     <string name="error_creating_folder">Érvénytelen mappa</string>
     <string name="error_open">Hiba a fájl megnyitásakor: nem találtunk ehhez a fájlhoz releváns alkalmazást</string>
@@ -360,7 +360,7 @@
         <item quantity="one"><x:g id="number" example="1">%1$d</x:g>/<x:g id="total" example="7">%2$d</x:g> eredmény</item>
         <item quantity="other"><x:g id="number" example="2">%1$d</x:g>/<x:g id="total" example="7">%2$d</x:g> eredmények</item>
     </plurals>
-    <string name="restart_needed">\"A változtatások alkalmazásra kerülnek a Hentoid újraindításakor\"</string>
+    <string name="restart_needed">\"A változtatások alkalmazásra kerülnek a Hendroid újraindításakor\"</string>
     <plurals name="redownload_confirm" tools:ignore="ImpliedQuantity">
         <item quantity="one">A kiválasztott könyv újbóli letöltése a nulláról\?</item>
         <item quantity="other">A kiválasztott könyvek újbóli letöltése a nulláról\?</item>
@@ -469,7 +469,7 @@ Minden kijelölt fejezet egy új könyvet hoz létre</string>
     <string name="alert_red">A letöltési gomb jelenleg nem használható ezen az oldalon</string>
     <string name="alert_grey">Ez az oldal jelenleg komoly stabilitási problémákkal küzd. Az alkalmazás nem tud mit kezdeni vele. Kérjük, próbálja meg később újra.</string>
     <string name="alert_black">Ez az oldal jelenleg nem érhető el. Az alkalmazás nem tud mit kezdeni vele. Kérjük, próbálja meg később újra.</string>
-    <string name="alert_wip">A Hentoid fejlesztőcsapat dolgozik a javításon. Az alkalmazás értesítést fog küldeni, ha az új verzió elkészül.</string>
+    <string name="alert_wip">A Hendroid fejlesztőcsapat dolgozik a javításon. Az alkalmazás értesítést fog küldeni, ha az új verzió elkészül.</string>
     <string name="alert_fix_available">A javítás elérhető az alkalmazás legújabb verziójában. Kérjük, frissítse az alkalmazást.</string>
 <string name="app_lock_pin">Kérjük írja be a PIN-kódot</string>
     <string name="app_lock_enable">Alkalmazászár bekapcsolva</string>
@@ -482,12 +482,12 @@ Minden kijelölt fejezet egy új könyvet hoz létre</string>
     <string name="pin_explanation">Az alkalmazászáró megakadályozza az alkalmazás jogosulatlan használatát, mivel az alkalmazás indulásakor 4 számjegyű PIN-kódot vár el.</string>
     <string name="pin_lock_on_restore">Zár, amikor visszaállítva\
 háttérből</string>
-<string name="about1"><b>A Hentoid</b> az egy Doujinshi &amp; Hentai Manga archiváló alkalmazás. A Hentoid alkalmazást eredetileg <b>Cesar Arasaki</b> készítette.</string>
-    <string name="personalDataStatement1"><b>SZEMÉLYES ADATVÉDELMI NYILATKOZAT</b>\n\nA Hentoid egy ingyenes és nyílt forráskódú szoftver, amelyet a Hentoid Közösség tart fenn (csatlakozz hozzánk a Discordon - lásd a fenti linket).</string>
-    <string name="personalDataStatement2">A Hentoid a következő személyes adatokat gyűjti és küldi a Google-nak feldolgozásra a firebase könyvtáron keresztül:\
+<string name="about1"><b>A Hendroid</b> az egy Doujinshi &amp; Hentai Manga archiváló alkalmazás. A Hendroid alkalmazást eredetileg <b>Cesar Arasaki</b> készítette.</string>
+    <string name="personalDataStatement1"><b>SZEMÉLYES ADATVÉDELMI NYILATKOZAT</b>\n\nA Hendroid egy ingyenes és nyílt forráskódú szoftver, amelyet a Hendroid Közösség tart fenn (csatlakozz hozzánk a Discordon - lásd a fenti linket).</string>
+    <string name="personalDataStatement2">A Hendroid a következő személyes adatokat gyűjti és küldi a Google-nak feldolgozásra a firebase könyvtáron keresztül:\
  - Munkamenet azonosító\n - IP cím</string>
     <string name="about_licenses">Licencek megjelenítése</string>
-    <string name="about_app_version" tools:ignore="MissingTranslation">Hentoid v<x:g id="ver_name" example="1.15.20">%1$s</x:g> (<x:g id="ver_code" example="130">%2$d</x:g>)</string>
+    <string name="about_app_version" tools:ignore="MissingTranslation">Hendroid v<x:g id="ver_name" example="1.15.20">%1$s</x:g> (<x:g id="ver_code" example="130">%2$d</x:g>)</string>
     <string name="about_chrome_version" tools:ignore="MissingTranslation">Chrome v<x:g id="chrome_ver" example="98">%1$d</x:g></string>
 <string name="web_gallery">Visszalépés a Galéria legutóbbi oldalára</string>
     <string name="web_home">Visszalépés a könyvtárba</string>

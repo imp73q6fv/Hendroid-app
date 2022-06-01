@@ -32,6 +32,7 @@ import io.objectbox.annotation.Index;
 import io.objectbox.annotation.Transient;
 import io.objectbox.converter.PropertyConverter;
 import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
 import me.devsaki.hentoid.activities.sources.ASMHentaiActivity;
 import me.devsaki.hentoid.activities.sources.AllPornComicActivity;
 import me.devsaki.hentoid.activities.sources.BaseWebActivity;
@@ -47,6 +48,7 @@ import me.devsaki.hentoid.activities.sources.LusciousActivity;
 import me.devsaki.hentoid.activities.sources.Manhwa18Activity;
 import me.devsaki.hentoid.activities.sources.ManhwaActivity;
 import me.devsaki.hentoid.activities.sources.MrmActivity;
+import me.devsaki.hentoid.activities.sources.MultpornActivity;
 import me.devsaki.hentoid.activities.sources.MusesActivity;
 import me.devsaki.hentoid.activities.sources.NhentaiActivity;
 import me.devsaki.hentoid.activities.sources.PixivActivity;
@@ -113,6 +115,7 @@ public class Content implements Serializable {
     private String storageFolder; // Used as pivot for API29 migration; no use after that (replaced by storageUri)
     private String storageUri; // Not exposed because it will vary according to book location -> valued at import
     private boolean favourite = false;
+    private int rating = 0;
     private boolean completed = false;
     private long reads = 0;
     private long lastReadDate;
@@ -123,6 +126,7 @@ public class Content implements Serializable {
 
     private @DownloadMode
     int downloadMode;
+    private ToOne<Content> contentToReplace;
 
     // Aggregated data redundant with the sum of individual data contained in ImageFile
     // ObjectBox can't do the sum in a single Query, so here it is !
@@ -268,6 +272,7 @@ public class Content implements Serializable {
             case TOONILY:
             case IMHENTAI:
             case ALLPORNCOMIC:
+            case MULTPORN:
             case DOUJINS:
                 // ID is the last numeric part of the URL
                 // e.g. lewd-title-ch-1-3-42116 -> 42116 is the ID
@@ -360,6 +365,8 @@ public class Content implements Serializable {
                 return PixivActivity.class;
             case MANHWA18:
                 return Manhwa18Activity.class;
+            case MULTPORN:
+                return MultpornActivity.class;
             default:
                 return BaseWebActivity.class;
         }
@@ -706,10 +713,6 @@ public class Content implements Serializable {
         return this;
     }
 
-    public boolean isFavourite() {
-        return favourite;
-    }
-
     public boolean isCompleted() {
         return completed;
     }
@@ -719,9 +722,21 @@ public class Content implements Serializable {
         return this;
     }
 
+    public boolean isFavourite() {
+        return favourite;
+    }
+
     public Content setFavourite(boolean favourite) {
         this.favourite = favourite;
         return this;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
     public boolean isLast() {
@@ -896,6 +911,14 @@ public class Content implements Serializable {
         this.updatedProperties = updatedProperties;
     }
 
+    public ToOne<Content> getContentToReplace() {
+        return contentToReplace;
+    }
+
+    public void setContentIdToReplace(long contentIdToReplace) {
+        this.contentToReplace.setTargetId(contentIdToReplace);
+    }
+
     public static class StringMapConverter implements PropertyConverter<Map<String, String>, String> {
         @Override
         public Map<String, String> convertToEntityProperty(String databaseValue) {
@@ -924,6 +947,7 @@ public class Content implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Content content = (Content) o;
         return isFavourite() == content.isFavourite() &&
+                getRating() == content.getRating() &&
                 isCompleted() == content.isCompleted() &&
                 getDownloadDate() == content.getDownloadDate() && // To differentiate external books that have no URL
                 getSize() == content.getSize() && // To differentiate external books that have no URL
@@ -937,7 +961,7 @@ public class Content implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUrl(), getCoverImageUrl(), getDownloadDate(), getSize(), getSite(), isFavourite(), isCompleted(), getLastReadDate(), isBeingDeleted(), getTitle());
+        return Objects.hash(getUrl(), getCoverImageUrl(), getDownloadDate(), getSize(), getSite(), isFavourite(), getRating(), isCompleted(), getLastReadDate(), isBeingDeleted(), getTitle());
     }
 
     public long uniqueHash() {

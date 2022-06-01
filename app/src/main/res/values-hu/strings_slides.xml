@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="slide_01_header">Üdvözlünk a Hentoid alkalmazásban!</string>
-    <string name="slide_01_text">A Hentoid az egy Doujinshi\n&amp; Hentai Manga archiváló alkalmazás.</string>
+    <string name="slide_01_header">Üdvözlünk a Hendroid alkalmazásban!</string>
+    <string name="slide_01_text">A Hendroid az egy Doujinshi\n&amp; Hentai Manga archiváló alkalmazás.</string>
     <string name="slide_02_header">Engedélyek</string>
     <string name="slide_02_text">Szükségünk van néhány engedélyre, hogy adatokat tárolhassunk a eszközén.</string>
     <string name="slide_04_header">Könyvtár</string>
-    <string name="slide_04_text">A Hentoid alkalmazásnak szüksége van egy dedikált mappának, a médiád eltárolásához.</string>
+    <string name="slide_04_text">A Hendroid alkalmazásnak szüksége van egy dedikált mappának, a médiád eltárolásához.</string>
 <string name="slide_04_skip">Átugrás</string>
 <string name="slide_04_skip_title">Átugrás\?</string>
     <string name="slide_04_skip_msg">Nem fogsz tudni letölteni, hogyha kihagyod ezt a lépést.\nAhhoz hogy letudj tölteni, be kell állítanod a letöltési mappát az alkalmazás beállításában.</string>

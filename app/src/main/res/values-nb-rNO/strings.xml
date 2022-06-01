@@ -37,12 +37,12 @@
     <string name="title_activity_about">Om</string>
     <string name="title_activity_app_lock">Programlås</string>
     <string name="title_activity_search">Avansert søk</string>
-<string name="api29_migration_title">Hentoid v12 \nFilhåndteringsoppdatering</string>
+<string name="api29_migration_title">Hendroid v12 \nFilhåndteringsoppdatering</string>
     <string name="api29_migration_subtitle">Oppdaterer samlingen din … \nDette kan ta noen minutter.</string>
-    <string name="api29_migration_location">Plassering av nåværende Hentoidmappe \n%s</string>
-    <string name="api29_migration_step1">Hentoid-mappe</string>
+    <string name="api29_migration_location">Plassering av nåværende Hendroidmappe \n%s</string>
+    <string name="api29_migration_step1">Hendroid-mappe</string>
     <string name="api29_migration_step1_external">Ekstern mappe</string>
-    <string name="api29_migration_step1_select">Velg Hentoid-mappe</string>
+    <string name="api29_migration_step1_select">Velg Hendroid-mappe</string>
     <string name="api29_migration_step1_select_external">Velg ekstern mappe</string>
     <string name="api29_migration_step3_init">Skanner bibliotek …</string>
     <string name="api29_migration_step3">Skann bibliotek (%1$d/%2$d)</string>
@@ -140,7 +140,7 @@
 
 <string name="refresh_title">Gjenoppfrisk bibliotek</string>
     <string name="refresh_options">Opprenskningsvalg</string>
-    <string name="refresh_location_internal">Hentoid-bibliotek</string>
+    <string name="refresh_location_internal">Hendroid-bibliotek</string>
     <string name="refresh_location_external">Eksternt bibliotek</string>
     <string name="refresh_options_remove">Fjern mapper der …</string>
     <string name="refresh_options_remove_1">JSON-fil mangler (anbefalt)</string>
@@ -226,8 +226,8 @@
 <string name="memory_title">Minnebruk</string>
     <string name="memory_total">Totalt: %s</string>
     <string name="memory_free">Ledig: %s</string>
-    <string name="memory_hentoid_main">Hentoid (primær): %s</string>
-    <string name="memory_hentoid_ext">Hentoid (ekstern): %s</string>
+    <string name="memory_hentoid_main">Hendroid (primær): %s</string>
+    <string name="memory_hentoid_ext">Hendroid (ekstern): %s</string>
     <string name="memory_details">Vis detaljer (primær)</string>
     <string name="memory_details_source">Kilde</string>
     <string name="memory_details_books">Bøker</string>
@@ -364,11 +364,11 @@
     <string name="pin_new">Skriv inn ny PIN</string>
     <string name="pin_new_confirm">Bekreft ny PIN</string>
 
-<string name="about1"><b>Hentoid</b> er et Doujinshi og H-Manga-arkiveringsprogram. Det ble opprinnelig laget av <b>Cesar Arasaki</b>.</string>
+<string name="about1"><b>Hendroid</b> er et Doujinshi og H-Manga-arkiveringsprogram. Det ble opprinnelig laget av <b>Cesar Arasaki</b>.</string>
 
 
     <string name="about_licenses">Vis lisenser</string>
-    <string name="about_app_version" tools:ignore="MissingTranslation">Hentoid ver: %1$s (%2$d)</string>
+    <string name="about_app_version" tools:ignore="MissingTranslation">Hendroid ver: %1$s (%2$d)</string>
 
     <string name="web_home">Tilbake til bibliotek</string>
     <string name="web_back">Tilbake</string>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="slide_01_header">Velkommen til Hentoid.</string>
-    <string name="slide_01_text">Hentoid is a Doujinshi \nog H-Manga-arkiveringsprogram</string>
+    <string name="slide_01_header">Velkommen til Hendroid.</string>
+    <string name="slide_01_text">Hendroid is a Doujinshi \nog H-Manga-arkiveringsprogram</string>
     <string name="slide_02_header">Tilganger</string>
     <string name="slide_02_text">Lagringstilgang er nødvendig for å lagre filer på enheten din.</string>
     <string name="slide_04_header">Bibliotek</string>
-    <string name="slide_04_text">Hentoid krever at du har en egen mappe til lagring av media.</string>
+    <string name="slide_04_text">Hendroid krever at du har en egen mappe til lagring av media.</string>
 <string name="slide_04_skip">Hopp over</string>
 <string name="slide_04_skip_title">Hopp over\?</string>
     <string name="slide_04_skip_msg">Du vil ikke kunne laste ned hvis du hopper over dette steget \nDet er mulig å sette opp en nedlastingsmappe i programinnstillingene</string>

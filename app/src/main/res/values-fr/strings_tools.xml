@@ -3,9 +3,9 @@
 <string name="tools_title">Outils</string>
 <string name="tools_screen_import_export">Importer / Exporter</string>
 <string name="tools_export_library_title">Exporter les métadonnées</string>
-<string name="tools_export_library_summary">Exporter les livres Hentoid vers un fichier JSON</string>
+<string name="tools_export_library_summary">Exporter les livres Hendroid vers un fichier JSON</string>
 <string name="tools_import_library_title">Importer les métadonnées</string>
-<string name="tools_import_library_summary">Restaurer les livres Hentoid exportés à partir d\'un fichier JSON</string>
+<string name="tools_import_library_summary">Restaurer les livres Hendroid exportés à partir d\'un fichier JSON</string>
 <string name="tools_screen_cat_settings">Paramètres</string>
 <string name="tools_export_settings_title">Paramètres d\'exportation</string>
 <string name="tools_export_settings_summary">Exporter les paramètres vers un fichier JSON</string>
