@@ -6,6 +6,7 @@
 
 
 
+
 Hendroid is a fork of the popular app [Hentoid](https://github.com/avluis/Hentoid). 
 It **removes all tracking** and updating (because it's intended to update only on F-droid). It's available on the [**F-droid repository**](https://f-droid.org/en/packages/org.nonononoki.hendroid).
 

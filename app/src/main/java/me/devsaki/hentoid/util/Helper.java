@@ -25,8 +25,8 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-//import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.android.material.slider.LabelFormatter;
+import com.google.android.material.slider.Slider;
 import com.google.android.material.slider.Slider;
 
 import org.threeten.bp.Instant;
@@ -444,6 +444,7 @@ public final class Helper {
         return 0;
     }
 
+    // https://www.threeten.org/threetenbp/apidocs/org/threeten/bp/format/DateTimeFormatter.html#ofPattern(java.lang.String)
     public static long parseDateToEpoch(@NonNull String date, @NonNull String pattern) {
         final String dateClean = date.trim().replaceAll("(?<=\\d)(st|nd|rd|th)", "");
         final DateTimeFormatter formatter = new DateTimeFormatterBuilder()

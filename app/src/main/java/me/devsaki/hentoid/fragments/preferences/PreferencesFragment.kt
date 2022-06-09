@@ -35,6 +35,7 @@ import me.devsaki.hentoid.retrofit.GithubServer
 import me.devsaki.hentoid.retrofit.sources.EHentaiServer
 import me.devsaki.hentoid.retrofit.sources.LusciousServer
 import me.devsaki.hentoid.retrofit.sources.PixivServer
+//import me.devsaki.hentoid.services.UpdateCheckService
 import me.devsaki.hentoid.util.FileHelper
 import me.devsaki.hentoid.util.Preferences
 import me.devsaki.hentoid.util.ThemeHelper
@@ -44,6 +45,7 @@ import me.devsaki.hentoid.viewmodels.PreferencesViewModel
 import me.devsaki.hentoid.viewmodels.ViewModelFactory
 import me.devsaki.hentoid.workers.ExternalImportWorker
 import me.devsaki.hentoid.workers.ImportWorker
+//import me.devsaki.hentoid.workers.UpdateDownloadWorker
 
 
 class PreferencesFragment : PreferenceFragmentCompat(),
@@ -185,12 +187,11 @@ class PreferencesFragment : PreferenceFragmentCompat(),
                 requireContext().startLocalActivity<PinPreferenceActivity>()
                 true
             }
-                /*
+            /*
             Preferences.Key.CHECK_UPDATE_MANUAL -> {
                 onCheckUpdatePrefClick()
                 true
-            }
-                */
+            }*/
             Preferences.Key.BROWSER_CLEAR_COOKIES -> {
                 onClearCookies()
                 true
@@ -215,8 +216,7 @@ class PreferencesFragment : PreferenceFragmentCompat(),
             val intent = UpdateCheckService.makeIntent(requireContext(), true)
             requireContext().startService(intent)
         }
-    }
-    */
+    }*/
 
     private fun onPrefRequiringRestartChanged() {
         ToastHelper.toast(R.string.restart_needed)

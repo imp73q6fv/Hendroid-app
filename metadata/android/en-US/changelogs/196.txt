@@ -1,0 +1,7 @@
+Fixed
+
+    Doujins.com : Properly parse single-digit upload dates
+    Crash when trying to display groups in grid mode
+    Optimize performance & memory footprint of mass-deletion operations
+    Crashes involving androidx.core.util.Pair JSON serialization
+    Misc. crashes reported by Firebase
