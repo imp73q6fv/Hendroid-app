@@ -39,6 +39,7 @@ import me.devsaki.hentoid.database.domains.Group;
 import me.devsaki.hentoid.database.domains.GroupItem;
 import me.devsaki.hentoid.database.domains.ImageFile;
 import me.devsaki.hentoid.database.domains.QueueRecord;
+import me.devsaki.hentoid.database.domains.SearchRecord;
 import me.devsaki.hentoid.database.domains.SiteBookmark;
 import me.devsaki.hentoid.database.domains.SiteHistory;
 import me.devsaki.hentoid.enums.AttributeType;
@@ -76,11 +77,6 @@ public class ObjectBoxDAO implements CollectionDAO {
     @Override
     public long getDbSizeBytes() {
         return db.getDbSizeBytes();
-    }
-
-    @Override
-    public List<Content> selectStoredContent(boolean nonFavouritesOnly, boolean includeQueued, int orderField, boolean orderDesc) {
-        return db.selectStoredContentQ(nonFavouritesOnly, includeQueued, orderField, orderDesc).build().find();
     }
 
     @Override
@@ -165,7 +161,7 @@ public class ObjectBoxDAO implements CollectionDAO {
         return db.selectErrorContentQ().find();
     }
 
-    public LiveData<Integer> countAllBooks() {
+    public LiveData<Integer> countAllBooksLive() {
         // This is not optimal because it fetches all the content and returns its size only
         // That's because ObjectBox v2.4.0 does not allow watching Query.count or Query.findLazy using LiveData, but only Query.find
         // See https://github.com/objectbox/objectbox-java/issues/776
@@ -364,19 +360,26 @@ public class ObjectBoxDAO implements CollectionDAO {
     }
 
     public long countAllInternalBooks(boolean favsOnly) {
-        return db.selectAllInternalBooksQ(favsOnly).count();
+        return db.selectAllInternalBooksQ(favsOnly, true).count();
     }
 
     public long countAllQueueBooks() {
         return db.selectAllQueueBooksQ().count();
     }
 
-    public List<Content> selectAllInternalBooks(boolean favsOnly) {
-        return db.selectAllInternalBooksQ(favsOnly).find();
+    public LiveData<Integer> countAllQueueBooksLive() {
+        // This is not optimal because it fetches all the content and returns its size only
+        // That's because ObjectBox v2.4.0 does not allow watching Query.count or Query.findLazy using LiveData, but only Query.find
+        // See https://github.com/objectbox/objectbox-java/issues/776
+        ObjectBoxLiveData<Content> livedata = new ObjectBoxLiveData<>(db.selectAllQueueBooksQ());
+
+        MediatorLiveData<Integer> result = new MediatorLiveData<>();
+        result.addSource(livedata, v -> result.setValue(v.size()));
+        return result;
     }
 
     public void streamAllInternalBooks(boolean favsOnly, Consumer<Content> consumer) {
-        Query<Content> query = db.selectAllInternalBooksQ(favsOnly);
+        Query<Content> query = db.selectAllInternalBooksQ(favsOnly, true);
         query.forEach(consumer::accept);
     }
 
@@ -523,7 +526,7 @@ public class ObjectBoxDAO implements CollectionDAO {
     }
 
     public void flagAllGroups(Grouping grouping) {
-        db.flagGroups(db.selectGroupsByGroupingQ(grouping.getId()).find(), true);
+        db.flagGroupsForDeletion(db.selectGroupsByGroupingQ(grouping.getId()).find(), true);
     }
 
     public void deleteAllFlaggedGroups() {
@@ -577,12 +580,12 @@ public class ObjectBoxDAO implements CollectionDAO {
         return db.selectAllQueueBooksQ().find();
     }
 
-    public void flagAllInternalBooks() {
-        db.flagContents(db.selectAllInternalBooksQ(false).find(), true);
+    public void flagAllInternalBooks(boolean includePlaceholders) {
+        db.flagContentsForDeletion(db.selectAllInternalBooksQ(false, includePlaceholders).find(), true);
     }
 
     public void deleteAllInternalBooks(boolean resetRemainingImagesStatus) {
-        db.deleteContentById(db.selectAllInternalBooksQ(false).findIds());
+        db.deleteContentById(db.selectAllInternalBooksQ(false, true).findIds());
 
         // Switch status of all remaining images (i.e. from queued books) to SAVED, as we cannot guarantee the files are still there
         if (resetRemainingImagesStatus) {
@@ -604,7 +607,7 @@ public class ObjectBoxDAO implements CollectionDAO {
     }
 
     public void flagAllErrorBooksWithJson() {
-        db.flagContents(db.selectAllErrorJsonBooksQ().find(), true);
+        db.flagContentsForDeletion(db.selectAllErrorJsonBooksQ().find(), true);
     }
 
     public void deleteAllQueuedBooks() {
@@ -777,11 +780,6 @@ public class ObjectBoxDAO implements CollectionDAO {
         return db.selectQueueRecordsQ(null).find();
     }
 
-    @Nullable
-    public QueueRecord selectQueue(long contentId) {
-        return db.selectQueueRecordFromContentId(contentId);
-    }
-
     public void updateQueue(@NonNull List<QueueRecord> queue) {
         db.updateQueue(queue);
     }
@@ -801,6 +799,8 @@ public class ObjectBoxDAO implements CollectionDAO {
     public void insertSiteHistory(@NonNull Site site, @NonNull String url) {
         db.insertSiteHistory(site, url);
     }
+
+    // BOOKMARKS
 
     public long countAllBookmarks() {
         return db.selectBookmarksQ(null).count();
@@ -837,6 +837,33 @@ public class ObjectBoxDAO implements CollectionDAO {
 
     public void deleteBookmark(long bookmarkId) {
         db.deleteBookmark(bookmarkId);
+    }
+
+
+    // SEARCH HISTORY
+
+    public LiveData<List<SearchRecord>> selectSearchRecordsLive() {
+        return new ObjectBoxLiveData<>(db.selectSearchRecordsQ());
+    }
+
+    private List<SearchRecord> selectSearchRecords() {
+        return db.selectSearchRecordsQ().find();
+    }
+
+    public void insertSearchRecord(@NonNull SearchRecord record, int limit) {
+        List<SearchRecord> records = selectSearchRecords();
+        if (records.contains(record)) return;
+
+        while (records.size() >= limit) {
+            db.deleteSearchRecord(records.get(0).id);
+            records.remove(0);
+        }
+        records.add(record);
+        db.insertSearchRecords(records);
+    }
+
+    public void deleteAllSearchRecords() {
+        db.selectSearchRecordsQ().remove();
     }
 
 

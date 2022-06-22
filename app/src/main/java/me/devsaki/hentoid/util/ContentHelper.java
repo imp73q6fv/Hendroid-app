@@ -49,10 +49,10 @@ import javax.annotation.Nonnull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.devsaki.hentoid.R;
-import me.devsaki.hentoid.activities.ImageViewerActivity;
+import me.devsaki.hentoid.activities.ReaderActivity;
 import me.devsaki.hentoid.activities.UnlockActivity;
 import me.devsaki.hentoid.activities.bundles.BaseWebActivityBundle;
-import me.devsaki.hentoid.activities.bundles.ImageViewerActivityBundle;
+import me.devsaki.hentoid.activities.bundles.ReaderActivityBundle;
 import me.devsaki.hentoid.core.Consts;
 import me.devsaki.hentoid.database.CollectionDAO;
 import me.devsaki.hentoid.database.domains.Attribute;
@@ -104,7 +104,7 @@ public final class ContentHelper {
     public static final String KEY_DL_PARAMS_UGOIRA_FRAMES = "ugo_frames";
 
     private static final String UNAUTHORIZED_CHARS = "[^a-zA-Z0-9.-]";
-    private static final int[] libraryStatus = new int[]{StatusContent.DOWNLOADED.getCode(), StatusContent.MIGRATED.getCode(), StatusContent.EXTERNAL.getCode()};
+    private static final int[] libraryStatus = new int[]{StatusContent.DOWNLOADED.getCode(), StatusContent.MIGRATED.getCode(), StatusContent.EXTERNAL.getCode(), StatusContent.PLACEHOLDER.getCode()};
     private static final int[] queueStatus = new int[]{StatusContent.DOWNLOADING.getCode(), StatusContent.PAUSED.getCode(), StatusContent.ERROR.getCode()};
     private static final int[] queueTabStatus = new int[]{StatusContent.DOWNLOADING.getCode(), StatusContent.PAUSED.getCode()};
 
@@ -239,13 +239,13 @@ public final class ContentHelper {
         List<Content> queuedContent = Stream.of(queue).map(qr -> qr.getContent().getTarget()).withoutNulls().toList();
         if (errors != null) queuedContent.addAll(errors);
 
-        JsonContentCollection contentCollection = new JsonContentCollection();
-        contentCollection.setQueue(queuedContent);
-
         DocumentFile rootFolder = FileHelper.getFolderFromTreeUriString(context, Preferences.getStorageUri());
         if (null == rootFolder) return false;
 
         try {
+            JsonContentCollection contentCollection = new JsonContentCollection();
+            contentCollection.setQueue(queuedContent);
+
             JsonHelper.jsonToFile(context, contentCollection, JsonContentCollection.class, rootFolder, Consts.QUEUE_JSON_FILE_NAME);
         } catch (IOException | IllegalArgumentException e) {
             // NB : IllegalArgumentException might happen for an unknown reason on certain devices
@@ -268,13 +268,14 @@ public final class ContentHelper {
             int pageNumber,
             Bundle searchParams,
             boolean forceShowGallery) {
-        ImageViewerActivityBundle builder = new ImageViewerActivityBundle();
+        if (content.getStatus().equals(StatusContent.PLACEHOLDER)) return false;
+        ReaderActivityBundle builder = new ReaderActivityBundle();
         builder.setContentId(content.getId());
         if (searchParams != null) builder.setSearchParams(searchParams);
         if (pageNumber > -1) builder.setPageNumber(pageNumber);
         builder.setForceShowGallery(forceShowGallery);
 
-        Intent viewer = new Intent(context, ImageViewerActivity.class);
+        Intent viewer = new Intent(context, ReaderActivity.class);
         viewer.putExtras(builder.getBundle());
 
         context.startActivity(viewer);
@@ -505,9 +506,10 @@ public final class ContentHelper {
                                         resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, os);
                                         resizedBitmap.recycle();
                                     }
+                                    return Uri.fromFile(finalFile);
+                                } finally {
                                     if (!extractedFile.delete())
                                         Timber.w("Failed deleting file %s", extractedFile.getAbsolutePath());
-                                    return Uri.fromFile(finalFile);
                                 }
                             })
                             // Add it as the book's cover
@@ -605,8 +607,10 @@ public final class ContentHelper {
      * @return Created directory
      */
     @Nullable
-    public static DocumentFile getOrCreateContentDownloadDir(@NonNull Context context, @NonNull Content content) {
-        DocumentFile siteDownloadDir = getOrCreateSiteDownloadDir(context, null, content.getSite());
+    public static DocumentFile getOrCreateContentDownloadDir(@NonNull Context context, @NonNull Content content, @Nullable DocumentFile siteDlDir) {
+        DocumentFile siteDownloadDir = siteDlDir;
+        if (null == siteDownloadDir)
+            siteDownloadDir = getOrCreateSiteDownloadDir(context, null, content.getSite());
         if (null == siteDownloadDir) return null;
 
         ImmutablePair<String, String> bookFolderName = formatBookFolderName(content);
@@ -686,6 +690,7 @@ public final class ContentHelper {
      */
     @SuppressWarnings("squid:S2676") // Math.abs is used for formatting purposes only
     public static String formatBookId(@NonNull final Content content) {
+        content.populateUniqueSiteId();
         String id = content.getUniqueSiteId();
         // For certain sources (8muses), unique IDs are strings that may be very long
         // => shorten them by using their hashCode
@@ -719,7 +724,7 @@ public final class ContentHelper {
      * @return Download directory of the given Site
      */
     @Nullable
-    static DocumentFile getOrCreateSiteDownloadDir(@NonNull Context context, @Nullable FileExplorer explorer, @NonNull Site site) {
+    public static DocumentFile getOrCreateSiteDownloadDir(@NonNull Context context, @Nullable FileExplorer explorer, @NonNull Site site) {
         String appUriStr = Preferences.getStorageUri();
         if (appUriStr.isEmpty()) {
             Timber.e("No storage URI defined for the app");
@@ -1273,7 +1278,8 @@ public final class ContentHelper {
         // First find good rough candidates by searching for the longest word in the title
         String[] words = StringHelper.cleanMultipleSpaces(StringHelper.cleanup(content.getTitle())).split(" ");
         Optional<String> longestWord = Stream.of(words).sorted((o1, o2) -> Integer.compare(o1.length(), o2.length())).findLast();
-        if (longestWord.isEmpty()) return null;
+        if (longestWord.isEmpty() || longestWord.get().length() < 2)
+            return null; // Too many resources consumed if the longest word is 1 character long
 
         int[] contentStatuses = ArrayUtils.addAll(libraryStatus, queueTabStatus);
         List<Content> roughCandidates = dao.searchTitlesWith(longestWord.get(), contentStatuses);
@@ -1491,7 +1497,7 @@ public final class ContentHelper {
                 }
             }
         } else { // Hentoid download folder for non-external content
-            targetFolder = ContentHelper.getOrCreateContentDownloadDir(context, mergedContent);
+            targetFolder = ContentHelper.getOrCreateContentDownloadDir(context, mergedContent, null);
         }
         if (null == targetFolder || !targetFolder.exists())
             throw new ContentNotProcessedException(mergedContent, "Could not create target directory");

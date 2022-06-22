@@ -1,0 +1,27 @@
+New
+
+    The app is now available in Hungarian on devices where default language is Hungarian
+    When the webview package is unavailable, the app explains it instead of silently crashing
+    Library : Books can now be marked as unread
+    Library : Recent searches are now available when using the search bar
+    Reader : Vertical scroll is now continuous in slideshow mode
+    Reader : New setting to control display around the notch area
+    Reader : New setting to use volume button for next/previous book
+    Reader : New setting to maintain zoom scale across pages on horizontal mode
+    Import metadata : New options for books that aren't found on the device during import
+
+Changed
+
+    Library : Rating filter can now filter unrated books
+    Library / left drawer : The quantity of queued items is now displayed near the queue button
+    Reader : Long tap is used to display page properties when zoom-on-long-tap isn't enabled
+
+Fixed
+
+    Pixiv : Animated pictures download is no longer broken
+    Pixiv : Fix a few pictures that couldn't be downloaded
+    E-hentai / ExHentai : Book titles are now formatted properly (no more & and other HTML-encoded stuff)
+    Reader : 1st page is now correctly aligned when viewing the book in RTL mode
+    Reader : Next / Previous buttons are now correctly positioned when viewing the book in RTL mode
+    Duplicate detector : Fix crash when trying to find a duplicate for books where the longest word is 1 letter-long
+    Import metadata : Optimized for large collections

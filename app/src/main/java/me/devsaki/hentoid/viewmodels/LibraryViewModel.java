@@ -3,8 +3,10 @@ package me.devsaki.hentoid.viewmodels;
 import static me.devsaki.hentoid.util.GroupHelper.moveContentToCustomGroup;
 
 import android.app.Application;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,6 +49,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import me.devsaki.hentoid.R;
+import me.devsaki.hentoid.activities.bundles.SearchActivityBundle;
 import me.devsaki.hentoid.core.Consts;
 import me.devsaki.hentoid.database.CollectionDAO;
 import me.devsaki.hentoid.database.domains.Attribute;
@@ -55,6 +58,7 @@ import me.devsaki.hentoid.database.domains.Content;
 import me.devsaki.hentoid.database.domains.Group;
 import me.devsaki.hentoid.database.domains.GroupItem;
 import me.devsaki.hentoid.database.domains.ImageFile;
+import me.devsaki.hentoid.database.domains.SearchRecord;
 import me.devsaki.hentoid.enums.Grouping;
 import me.devsaki.hentoid.enums.Site;
 import me.devsaki.hentoid.enums.StatusContent;
@@ -105,8 +109,11 @@ public class LibraryViewModel extends AndroidViewModel {
     private final MediatorLiveData<Integer> currentGroupTotal = new MediatorLiveData<>();
     private final MutableLiveData<Boolean> isCustomGroupingAvailable = new MutableLiveData<>();     // True if there's at least one existing custom group; false instead
     private final MutableLiveData<Bundle> groupSearchBundle = new MutableLiveData<>();
+    // Other data
+    private final LiveData<List<SearchRecord>> searchRecords;
+    private final LiveData<Integer> totalQueue;
 
-    // Updated whenever a new COntentsearch is performed
+    // Updated whenever a new Contentsearch is performed
     private final MediatorLiveData<Boolean> newContentSearch = new MediatorLiveData<>();
 
 
@@ -115,7 +122,9 @@ public class LibraryViewModel extends AndroidViewModel {
         dao = collectionDAO;
         contentSearchManager = new ContentSearchManager(dao);
         groupSearchManager = new GroupSearchManager(dao);
-        totalContent = dao.countAllBooks();
+        totalContent = dao.countAllBooksLive();
+        totalQueue = dao.countAllQueueBooksLive();
+        searchRecords = dao.selectSearchRecordsLive();
         refreshCustomGroupingAvailable();
     }
 
@@ -187,6 +196,16 @@ public class LibraryViewModel extends AndroidViewModel {
         return groupSearchBundle;
     }
 
+    @NonNull
+    public LiveData<List<SearchRecord>> getSearchRecords() {
+        return searchRecords;
+    }
+
+    @NonNull
+    public LiveData<Integer> getTotalQueue() {
+        return totalQueue;
+    }
+
     // =========================
     // ========= LIBRARY ACTIONS
     // =========================
@@ -217,6 +236,10 @@ public class LibraryViewModel extends AndroidViewModel {
         contentSearchManager.clearSelectedSearchTags(); // If user searches in main toolbar, universal search takes over advanced search
         contentSearchManager.setQuery(query);
         newContentSearch.setValue(true);
+        if (!query.isEmpty()) {
+            Uri searchUri = SearchActivityBundle.Companion.buildSearchUri(null, query);
+            dao.insertSearchRecord(SearchRecord.fromContentUniversalSearch(searchUri), 10);
+        }
         doSearchContent();
     }
 
@@ -226,11 +249,25 @@ public class LibraryViewModel extends AndroidViewModel {
      * @param query    Query to use for the search
      * @param metadata Metadata to use for the search
      */
-    public void searchContent(@NonNull String query, @NonNull List<Attribute> metadata) {
+    public void searchContent(@NonNull String query, @NonNull List<Attribute> metadata, @NonNull Uri searchUri) {
         contentSearchManager.setQuery(query);
         contentSearchManager.setTags(metadata);
         newContentSearch.setValue(true);
+
+        if (!metadata.isEmpty()) {
+            String label = TextUtils.join("|", Stream.of(metadata).map(a -> formatAttribute(a, getApplication().getResources())).toList());
+            if (label.length() > 50) label = label.substring(0, 50) + "…";
+            dao.insertSearchRecord(SearchRecord.fromContentAdvancedSearch(searchUri, label), 10);
+        }
         doSearchContent();
+    }
+
+    private String formatAttribute(@NonNull Attribute a, @NonNull Resources res) {
+        return String.format("%s%s:%s",
+                a.isExcluded() ? "[x]" : "",
+                res.getString(a.getType().getDisplayName()),
+                a.getDisplayName()
+        );
     }
 
     public void clearContent() {
@@ -415,7 +452,53 @@ public class LibraryViewModel extends AndroidViewModel {
             if (theContent.isBeingDeleted()) return;
             theContent.setCompleted(!theContent.isCompleted());
             ContentHelper.persistJson(getApplication(), theContent);
-            dao.insertContent(theContent);
+            dao.insertContentCore(theContent);
+            return;
+        }
+
+        throw new InvalidParameterException("Invalid ContentId : " + contentId);
+    }
+
+    public void resetReadStats(@NonNull final List<Content> content, @NonNull final Runnable onSuccess) {
+        compositeDisposable.add(
+                Observable.fromIterable(content)
+                        .observeOn(Schedulers.io())
+                        .map(c -> {
+                            doResetReadStats(c.getId());
+                            return c;
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                v -> onSuccess.run(),
+                                Timber::e
+                        )
+        );
+    }
+
+    /**
+     * Reset read stats of the given content
+     *
+     * @param contentId ID of the content whose read stats to reset
+     */
+    private void doResetReadStats(long contentId) {
+        Helper.assertNonUiThread();
+
+        // Check if given content still exists in DB
+        Content theContent = dao.selectContent(contentId);
+
+        if (theContent != null) {
+            if (theContent.isBeingDeleted()) return;
+            theContent.setReads(0);
+            theContent.setReadPagesCount(0);
+            theContent.setLastReadPageIndex(0);
+            theContent.setLastReadDate(0);
+            List<ImageFile> imgs = theContent.getImageFiles();
+            if (imgs != null) {
+                for (ImageFile img : imgs) img.setRead(false);
+                dao.insertImageFiles(imgs);
+            }
+            ContentHelper.persistJson(getApplication(), theContent);
+            dao.insertContentCore(theContent);
             return;
         }
 
@@ -1121,7 +1204,7 @@ public class LibraryViewModel extends AndroidViewModel {
             Content splitContent = createContentFromChapter(content, chap);
 
             // Create a new folder for the split content
-            DocumentFile targetFolder = ContentHelper.getOrCreateContentDownloadDir(getApplication(), splitContent);
+            DocumentFile targetFolder = ContentHelper.getOrCreateContentDownloadDir(getApplication(), splitContent, null);
             if (null == targetFolder || !targetFolder.exists())
                 throw new ContentNotProcessedException(splitContent, "Could not create target directory");
 
@@ -1222,5 +1305,9 @@ public class LibraryViewModel extends AndroidViewModel {
         splitContent.addAttributes(splitAttributes);
 
         return splitContent;
+    }
+
+    public void clearSearchHistory() {
+        dao.deleteAllSearchRecords();
     }
 }

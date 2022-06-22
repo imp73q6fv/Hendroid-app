@@ -15,6 +15,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.threeten.bp.Instant;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -54,6 +55,7 @@ import me.devsaki.hentoid.database.domains.ImageFile_;
 import me.devsaki.hentoid.database.domains.MyObjectBox;
 import me.devsaki.hentoid.database.domains.QueueRecord;
 import me.devsaki.hentoid.database.domains.QueueRecord_;
+import me.devsaki.hentoid.database.domains.SearchRecord;
 import me.devsaki.hentoid.database.domains.ShuffleRecord;
 import me.devsaki.hentoid.database.domains.SiteBookmark;
 import me.devsaki.hentoid.database.domains.SiteBookmark_;
@@ -212,17 +214,18 @@ public class ObjectBoxDB {
         return store.boxFor(Content.class).query().in(Content_.status, statusCodes).build().find();
     }
 
-    Query<Content> selectAllInternalBooksQ(boolean favsOnly) {
+    Query<Content> selectAllInternalBooksQ(boolean favsOnly, boolean includePlaceholders) {
         // All statuses except SAVED, DOWNLOADING, PAUSED and ERROR that imply the book is in the download queue
         // and EXTERNAL because we only want to manage internal books here
-        int[] storedContentStatus = new int[]{
+        List<Integer> storedContentStatus = Arrays.asList(
                 StatusContent.DOWNLOADED.getCode(),
                 StatusContent.MIGRATED.getCode(),
                 StatusContent.IGNORED.getCode(),
                 StatusContent.UNHANDLED_ERROR.getCode(),
                 StatusContent.CANCELED.getCode()
-        };
-        QueryBuilder<Content> query = store.boxFor(Content.class).query().in(Content_.status, storedContentStatus);
+        );
+        if (includePlaceholders) storedContentStatus.add(StatusContent.PLACEHOLDER.getCode());
+        QueryBuilder<Content> query = store.boxFor(Content.class).query().in(Content_.status, Helper.getPrimitiveArrayFromListInt(storedContentStatus));
         if (favsOnly) query.equal(Content_.favourite, true);
         return query.build();
     }
@@ -247,12 +250,12 @@ public class ObjectBoxDB {
         return store.boxFor(Content.class).query().equal(Content_.isBeingDeleted, true).build();
     }
 
-    void flagContents(List<Content> contentList, boolean flag) {
+    void flagContentsForDeletion(List<Content> contentList, boolean flag) {
         for (Content c : contentList) c.setFlaggedForDeletion(flag);
         store.boxFor(Content.class).put(contentList);
     }
 
-    void markContents(List<Content> contentList, boolean flag) {
+    void markContentsAsBeingDeleted(List<Content> contentList, boolean flag) {
         for (Content c : contentList) c.setIsBeingDeleted(flag);
         store.boxFor(Content.class).put(contentList);
     }
@@ -324,19 +327,11 @@ public class ObjectBoxDB {
         Box<AttributeLocation> locationBox = store.boxFor(AttributeLocation.class);
 
         // Stream the collection to get the attributes to clean
-        List<Attribute> attrsToClean = new ArrayList<>();
-        Query<Attribute> attrQuery = attributeBox.query().build();
-        attrQuery.forEach(
-                attr -> {
-                    if (attr.contents.isEmpty()) {
-                        Timber.i(">> Found empty attr : %s", attr.getName());
-                        attrsToClean.add(attr);
-                    }
-                }
-        );
+        List<Attribute> attrsToClean = attributeBox.query().filter(attr -> attr.contents.isEmpty()).build().find();
 
         // Clean the attributes
         for (Attribute attr : attrsToClean) {
+            Timber.v(">> Found empty attr : %s", attr.getName());
             locationBox.remove(attr.getLocations());
             attr.getLocations().clear();                                           // Clear location links
             attributeBox.remove(attr);                                             // Delete the attribute itself
@@ -348,13 +343,6 @@ public class ObjectBoxDB {
         List<QueueRecord> queueRecords = selectQueueRecordsQ(null).find();
         for (QueueRecord q : queueRecords) result.add(q.getContent().getTarget());
         return result;
-    }
-
-    @Nullable
-    QueueRecord selectQueueRecordFromContentId(long contentId) {
-        QueryBuilder<QueueRecord> qb = store.boxFor(QueueRecord.class).query();
-        qb.equal(QueueRecord_.contentId, contentId);
-        return qb.build().findFirst();
     }
 
     Query<QueueRecord> selectQueueRecordsQ(String query) {
@@ -564,7 +552,7 @@ public class ObjectBoxDB {
         if (searchBundle.getFilterBookCompleted()) query.equal(Content_.completed, true);
         else if (searchBundle.getFilterBookNotCompleted()) query.equal(Content_.completed, false);
 
-        if (searchBundle.getFilterRating() > 0)
+        if (searchBundle.getFilterRating() > -1)
             query.equal(Content_.rating, searchBundle.getFilterRating());
 
         if (hasTitleFilter)
@@ -628,7 +616,7 @@ public class ObjectBoxDB {
         else if (searchBundle.getFilterBookNotCompleted())
             contentQuery.equal(Content_.completed, false);
 
-        if (searchBundle.getFilterRating() > 0)
+        if (searchBundle.getFilterRating() > -1)
             contentQuery.equal(Content_.rating, searchBundle.getFilterRating());
 
         if (hasTitleFilter)
@@ -658,7 +646,7 @@ public class ObjectBoxDB {
         if (searchBundle.getFilterBookCompleted()) query.equal(Content_.completed, true);
         else if (searchBundle.getFilterBookNotCompleted()) query.equal(Content_.completed, false);
 
-        if (searchBundle.getFilterRating() > 0)
+        if (searchBundle.getFilterRating() > -1)
             query.equal(Content_.rating, searchBundle.getFilterRating());
 
         if (searchBundle.getFilterPageFavourites()) filterWithPageFavs(query);
@@ -685,7 +673,7 @@ public class ObjectBoxDB {
         if (searchBundle.getFilterBookCompleted()) query.equal(Content_.completed, true);
         else if (searchBundle.getFilterBookNotCompleted()) query.equal(Content_.completed, false);
 
-        if (searchBundle.getFilterRating() > 0)
+        if (searchBundle.getFilterRating() > -1)
             query.equal(Content_.rating, searchBundle.getFilterRating());
 
         if (searchBundle.getFilterPageFavourites()) filterWithPageFavs(query);
@@ -731,7 +719,7 @@ public class ObjectBoxDB {
         else if (searchBundle.getFilterBookNotCompleted())
             contentQuery.equal(Content_.completed, false);
 
-        if (searchBundle.getFilterRating() > 0)
+        if (searchBundle.getFilterRating() > -1)
             contentQuery.equal(Content_.rating, searchBundle.getFilterRating());
 
 
@@ -1254,7 +1242,7 @@ public class ObjectBoxDB {
     Query<ImageFile> selectDownloadedImagesFromContentQ(long id) {
         QueryBuilder<ImageFile> builder = store.boxFor(ImageFile.class).query();
         builder.equal(ImageFile_.contentId, id);
-        builder.in(ImageFile_.status, new int[]{StatusContent.DOWNLOADED.getCode(), StatusContent.EXTERNAL.getCode(), StatusContent.ONLINE.getCode()});
+        builder.in(ImageFile_.status, new int[]{StatusContent.DOWNLOADED.getCode(), StatusContent.EXTERNAL.getCode(), StatusContent.ONLINE.getCode(), StatusContent.PLACEHOLDER.getCode()});
         builder.order(ImageFile_.order);
         return builder.build();
     }
@@ -1273,6 +1261,8 @@ public class ObjectBoxDB {
     SiteHistory selectHistory(@NonNull Site s) {
         return store.boxFor(SiteHistory.class).query().equal(SiteHistory_.site, s.getCode()).build().findFirst();
     }
+
+    // BOOKMARKS
 
     Query<SiteBookmark> selectBookmarksQ(@Nullable Site s) {
         QueryBuilder<SiteBookmark> qb = store.boxFor(SiteBookmark.class).query();
@@ -1321,6 +1311,23 @@ public class ObjectBoxDB {
         return query.build();
     }
 
+    // SEARCH RECORDS
+
+    Query<SearchRecord> selectSearchRecordsQ() {
+        QueryBuilder<SearchRecord> qb = store.boxFor(SearchRecord.class).query();
+        return qb.build();
+    }
+
+    void deleteSearchRecord(long id) {
+        store.boxFor(SearchRecord.class).remove(id);
+    }
+
+    void insertSearchRecords(@NonNull List<SearchRecord> records) {
+        store.boxFor(SearchRecord.class).put(records);
+    }
+
+    // GROUPS
+
     long insertGroup(Group group) {
         return store.boxFor(Group.class).put(group);
     }
@@ -1337,10 +1344,6 @@ public class ObjectBoxDB {
         QueryBuilder<GroupItem> qb = store.boxFor(GroupItem.class).query().equal(GroupItem_.contentId, contentId);
         qb.link(GroupItem_.group).equal(Group_.grouping, groupingId);
         return qb.build().find();
-    }
-
-    void deleteGroupItem(long groupItemId) {
-        store.boxFor(GroupItem.class).remove(groupItemId);
     }
 
     void deleteGroupItems(long[] groupItemIds) {
@@ -1384,7 +1387,7 @@ public class ObjectBoxDB {
 
         if (groupFavouritesOnly) qb.equal(Group_.favourite, true);
 
-        if (filterRating > 0) qb.equal(Group_.rating, filterRating);
+        if (filterRating > -1) qb.equal(Group_.rating, filterRating);
 
         Property<Group> property = Group_.name;
         if (Preferences.Constant.ORDER_FIELD_CUSTOM == orderField || grouping == Grouping.DL_DATE.getId())
@@ -1424,7 +1427,7 @@ public class ObjectBoxDB {
         return store.boxFor(Group.class).query().equal(Group_.isFlaggedForDeletion, true).build();
     }
 
-    void flagGroups(List<Group> groupList, boolean flag) {
+    void flagGroupsForDeletion(List<Group> groupList, boolean flag) {
         for (Group g : groupList) g.setFlaggedForDeletion(flag);
         store.boxFor(Group.class).put(groupList);
     }

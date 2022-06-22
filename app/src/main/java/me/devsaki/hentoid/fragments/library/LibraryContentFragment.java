@@ -35,6 +35,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.annotation.StringRes;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
@@ -185,6 +186,8 @@ public class LibraryContentFragment extends Fragment implements
     private PagedList<Content> library;
     // Position of top item to memorize or restore (used when activity is destroyed and recreated)
     private int topItemPosition = -1;
+    // Indicated whether top item position restoration has been consumed or not
+    private boolean topItemConsumed = false;
     // TODO doc
     private Group group = null;
     // TODO doc
@@ -490,6 +493,9 @@ public class LibraryContentFragment extends Fragment implements
             case R.id.action_completed:
                 markSelectedAsCompleted();
                 break;
+            case R.id.action_reset_read:
+                resetSelectedReadStats();
+                break;
             case R.id.action_archive:
                 archiveSelectedItems();
                 break;
@@ -604,6 +610,20 @@ public class LibraryContentFragment extends Fragment implements
             List<Content> selectedContent = Stream.of(selectedItems).map(ContentItem::getContent).withoutNulls().toList();
             if (!selectedContent.isEmpty()) {
                 viewModel.toggleContentCompleted(selectedContent, this::refreshIfNeeded);
+                selectExtension.deselect(selectExtension.getSelections());
+            }
+        }
+    }
+
+    /**
+     * Callback for "reset read stats" action button
+     */
+    private void resetSelectedReadStats() {
+        Set<ContentItem> selectedItems = selectExtension.getSelectedItems();
+        if (!selectedItems.isEmpty()) {
+            List<Content> selectedContent = Stream.of(selectedItems).map(ContentItem::getContent).withoutNulls().toList();
+            if (!selectedContent.isEmpty()) {
+                viewModel.resetReadStats(selectedContent, this::refreshIfNeeded);
                 selectExtension.deselect(selectExtension.getSelections());
             }
         }
@@ -836,7 +856,8 @@ public class LibraryContentFragment extends Fragment implements
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        topItemPosition = 0;
+        topItemPosition = -1;
+        topItemConsumed = false;
         if (null == savedInstanceState) return;
 
         if (viewModel != null) viewModel.onRestoreState(savedInstanceState);
@@ -965,7 +986,7 @@ public class LibraryContentFragment extends Fragment implements
         SearchActivityBundle builder = new SearchActivityBundle();
 
         if (!getMetadata().isEmpty())
-            builder.setUri(SearchActivityBundle.Companion.buildSearchUri(getMetadata()).toString());
+            builder.setUri(SearchActivityBundle.Companion.buildSearchUri(getMetadata(), "").toString());
 
         if (group != null)
             builder.setGroupId(group.id);
@@ -990,7 +1011,7 @@ public class LibraryContentFragment extends Fragment implements
                 excludeClicked = parser.getExcludeMode();
                 setQuery(searchUri.getPath());
                 setMetadata(SearchActivityBundle.Companion.parseSearchUri(searchUri));
-                viewModel.searchContent(getQuery(), getMetadata());
+                viewModel.searchContent(getQuery(), getMetadata(), searchUri);
             }
         }
     }
@@ -1000,6 +1021,7 @@ public class LibraryContentFragment extends Fragment implements
      *
      * @param isEndless True if endless mode has to be set; false if paged mode has to be set
      */
+    @OptIn(markerClass = com.mikepenz.fastadapter.paged.ExperimentalPagedSupport.class)
     private void setPagingMethod(boolean isEndless, boolean isEditMode) {
         // Editing will always be done in Endless mode
         viewModel.setContentPagingMethod(isEndless || isEditMode);
@@ -1265,6 +1287,7 @@ public class LibraryContentFragment extends Fragment implements
      *
      * @param result Current library according to active filters
      */
+    @OptIn(markerClass = com.mikepenz.fastadapter.paged.ExperimentalPagedSupport.class)
     private void onLibraryChanged(PagedList<Content> result) {
         Timber.i(">> Library changed ! Size=%s", result.size());
         if (!enabled && !Preferences.getGroupingDisplay().equals(Grouping.FLAT)) return;
@@ -1354,7 +1377,7 @@ public class LibraryContentFragment extends Fragment implements
      * @param item ContentItem that has been clicked on
      */
     private boolean onItemClick(int position, @NonNull ContentItem item) {
-        if (selectExtension.getSelections().isEmpty()) {
+        if (/*selectExtension.getSelections().isEmpty()*/selectExtension.getSelectOnLongClick()) {
             if (item.getContent() != null && !item.getContent().isBeingDeleted()) {
                 readBook(item.getContent(), false);
             }
@@ -1528,21 +1551,17 @@ public class LibraryContentFragment extends Fragment implements
      */
     private void differEndCallback() {
         Timber.v(">> differEndCallback");
-        if (topItemPosition > -1) {
-            int targetPos = topItemPosition;
-            listRefreshDebouncer.submit(targetPos);
-            topItemPosition = -1;
-        }
+        if (!topItemConsumed) listRefreshDebouncer.submit(topItemPosition);
     }
 
     /**
      * Callback for the end of recycler updates
      * Activated when all _displayed_ items are placed on their definitive position
      */
-    private void onRecyclerUpdated(int topItemPosition) {
-        int currentPosition = getTopItemPosition();
-        if (currentPosition != topItemPosition)
-            llm.scrollToPositionWithOffset(topItemPosition, 0); // Used to restore position after activity has been stopped and recreated
+    private void onRecyclerUpdated(final int targetTopItemPosition) {
+        topItemConsumed = true;
+        if (targetTopItemPosition > -1 && getTopItemPosition() != targetTopItemPosition)
+            llm.scrollToPositionWithOffset(targetTopItemPosition, 0); // Used to restore position after activity has been stopped and recreated
     }
 
     /**

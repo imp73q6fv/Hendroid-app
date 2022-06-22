@@ -268,6 +268,14 @@
         <item>@string/pref_viewer_slideshow_delay_entries_5</item>
         <item>@string/pref_viewer_slideshow_delay_entries_6</item>
     </string-array>
+    <string-array name="pref_viewer_slideshow_delay_entries_vertical" translatable="false">
+        <item>@string/pref_viewer_slideshow_delay_entries_vertical_1</item>
+        <item>@string/pref_viewer_slideshow_delay_entries_vertical_2</item>
+        <item>@string/pref_viewer_slideshow_delay_entries_vertical_3</item>
+        <item>@string/pref_viewer_slideshow_delay_entries_vertical_4</item>
+        <item>@string/pref_viewer_slideshow_delay_entries_vertical_5</item>
+        <item>@string/pref_viewer_slideshow_delay_entries_vertical_6</item>
+    </string-array>
     <string-array name="pref_viewer_slideshow_delay_values" translatable="false">
         <item>5</item>
         <item>4</item>
@@ -319,11 +327,17 @@
         <item>@string/pref_lock_timer_entries_4</item>
         <item>@string/pref_lock_timer_entries_5</item>
     </string-array>
+    <string-array name="tools_import_empty_books_entries" translatable="false">
+        <item>@string/tools_import_empty_books_entries_1</item>
+        <item>@string/tools_import_empty_books_entries_2</item>
+        <item>@string/tools_import_empty_books_entries_3</item>
+        <item>@string/tools_import_empty_books_entries_4</item>
+    </string-array>
 
     <!-- Strings: Main: Generic Usage -->
     <string name="app_name" translatable="false">Hendroid</string>
     <string name="error" translatable="false">Error</string>
-    <string name="empty_string" translatable="false"/>
+    <string name="empty_string" translatable="false" />
     <!-- Strings: Main: TextViews -->
     <string name="work_untitled" translatable="false">[No data]</string>
     <!-- Strings: Main: Export metadata -->
@@ -333,7 +347,7 @@
     <string name="enabled" translatable="false">ENABLED</string>
     <string name="disabled" translatable="false">DISABLED</string>
     <!-- Strings: Main: Logs -->
-    <string name="error_log_header" translatable="false">Error log for <x:g id="title">%1$s</x:g> [<x:g id="site_id">%2$s</x:g>@<x:g id="site_name">%3$s</x:g>]: <x:g id="error_count" example="2">%4$d</x:g> errors</string>
+    <string name="error_log_header" translatable="false">Error log for <x:g id="title">%1$s</x:g> [<x:g id="site_id">%2$s</x:g>@<x:g id="site_name">%3$s</x:g>]: <x:g example="2" id="error_count">%4$d</x:g> errors</string>
     <string name="error_log_header_queue" translatable="false">Error log for queue</string>
     <!-- Strings: Main: Library fragment -->
     <string name="book_title" translatable="false">This is a rather long title, just because we need it to be.</string>
@@ -407,12 +421,15 @@
     <bool name="pref_viewer_page_turn_keyboard_default" translatable="false">true</bool>
     <bool name="pref_viewer_swipe_to_fling_default" translatable="false">false</bool>
     <bool name="pref_viewer_invert_volume_default" translatable="false">false</bool>
+    <bool name="pref_viewer_book_switch_volume_default" translatable="false">false</bool>
     <bool name="pref_viewer_zoom_holding_default" translatable="false">false</bool>
     <string name="pref_viewer_cap_tap_zoom_default" translatable="false">0</string>
     <bool name="pref_viewer_keep_screen_on_default" translatable="false">true</bool>
+    <bool name="pref_viewer_display_notch_default" translatable="true">true</bool>
     <bool name="pref_viewer_display_pagenum_default" translatable="false">false</bool>
     <bool name="pref_viewer_tap_transitions_default" translatable="false">true</bool>
     <bool name="pref_viewer_zoom_transitions_default" translatable="false">true</bool>
+    <bool name="pref_viewer_maintain_horizontal_zoom_default" translatable="false">false</bool>
     <string name="pref_viewer_separating_bars_default" translatable="false">0</string>
     <string name="pref_viewer_display_mode_default" translatable="false">0</string>
     <string name="pref_viewer_rendering_default" translatable="false">0</string>
@@ -423,4 +440,5 @@
     <bool name="pref_viewer_continuous_default" translatable="false">false</bool>
     <string name="pref_viewer_read_threshold_default" translatable="false">0</string>
     <string name="pref_viewer_slideshow_delay_default" translatable="false">0</string>
+    <string name="pref_viewer_slideshow_delay_vertical_default" translatable="false">0</string>
 </resources>

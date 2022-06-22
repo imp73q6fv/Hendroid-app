@@ -1,6 +1,5 @@
 package me.devsaki.hentoid.fragments.library;
 
-import static androidx.core.view.ViewCompat.requireViewById;
 import static me.devsaki.hentoid.events.CommunicationEvent.EV_CLOSED;
 import static me.devsaki.hentoid.events.CommunicationEvent.RC_DRAWER;
 
@@ -19,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
@@ -38,29 +37,31 @@ import me.devsaki.hentoid.activities.LibraryActivity;
 import me.devsaki.hentoid.activities.PrefsActivity;
 import me.devsaki.hentoid.activities.QueueActivity;
 import me.devsaki.hentoid.activities.ToolsActivity;
+import me.devsaki.hentoid.databinding.FragmentNavigationDrawerBinding;
 import me.devsaki.hentoid.enums.Site;
 import me.devsaki.hentoid.events.CommunicationEvent;
 import me.devsaki.hentoid.events.UpdateEvent;
 import me.devsaki.hentoid.json.core.UpdateInfo;
 import me.devsaki.hentoid.util.Preferences;
 import me.devsaki.hentoid.viewholders.DrawerItem;
+import me.devsaki.hentoid.viewmodels.LibraryViewModel;
+import me.devsaki.hentoid.viewmodels.ViewModelFactory;
 
 public final class NavigationDrawerFragment extends Fragment {
 
+    private static final String ALOVOA_URL = "https://f-droid.org/en/packages/com.alovoa.alovoa/";
+
     private LibraryActivity parentActivity;
 
-    private final ItemAdapter<DrawerItem> drawerAdapter = new ItemAdapter<>();
-    private final FastAdapter<DrawerItem> fastAdapter = FastAdapter.with(drawerAdapter);
-    private RecyclerView recyclerView;
-
+    private LibraryViewModel viewModel;
     private UpdateEvent updateInfo;
-
-    private View aboutBadge;
-
-    private static final String ALOVOA_URL = "https://alovoa.com";
 
     // Settings listener
     private final SharedPreferences.OnSharedPreferenceChangeListener prefsListener = (p, k) -> onSharedPreferenceChanged(k);
+
+    private FragmentNavigationDrawerBinding binding = null;
+    private final ItemAdapter<DrawerItem> drawerAdapter = new ItemAdapter<>();
+    private final FastAdapter<DrawerItem> fastAdapter = FastAdapter.with(drawerAdapter);
 
 
     @Override
@@ -84,43 +85,51 @@ public final class NavigationDrawerFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        binding = FragmentNavigationDrawerBinding.inflate(inflater, container, false);
 
-        View btn = requireViewById(rootView, R.id.drawer_about_btn);
-        btn.setOnClickListener(v -> onAboutClick());
-
-        btn = requireViewById(rootView, R.id.drawer_app_prefs_btn);
-        btn.setOnClickListener(v -> onPrefsClick());
-
-        btn = requireViewById(rootView, R.id.drawer_tools_btn);
-        btn.setOnClickListener(v -> onToolsClick());
-
-        btn = requireViewById(rootView, R.id.drawer_app_queue_btn);
-        btn.setOnClickListener(v -> onQueueClick());
-
-        View header = requireViewById(rootView, R.id.drawer_header);
-        header.setOnClickListener(v -> onHeaderClick());
-
-        aboutBadge = requireViewById(rootView, R.id.drawer_about_badge_btn);
+        binding.drawerAboutBtn.setOnClickListener(v -> onAboutClick());
+        binding.drawerAppPrefsBtn.setOnClickListener(v -> onPrefsClick());
+        binding.drawerToolsBtn.setOnClickListener(v -> onToolsClick());
+        binding.drawerAppQueueBtn.setOnClickListener(v -> onQueueClick());
 
         fastAdapter.setOnClickListener((v, a, i, p) -> onItemClick(p));
-        recyclerView = requireViewById(rootView, R.id.drawer_list);
-        recyclerView.setAdapter(fastAdapter);
+        binding.drawerList.setAdapter(fastAdapter);
 
         updateItems();
 
         Preferences.registerPrefsChangedListener(prefsListener);
 
-        TextView alovoaNameText = requireViewById(rootView, R.id.alovoa_name_text);
-        TextView alovoaNameSlogan = requireViewById(rootView, R.id.alovoa_slogan_text);
+        ViewModelFactory vmFactory = new ViewModelFactory(requireActivity().getApplication());
+        viewModel = new ViewModelProvider(requireActivity(), vmFactory).get(LibraryViewModel.class);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        binding = null;
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel.getTotalQueue().observe(getViewLifecycleOwner(), this::onTotalQueueChanged);
+        // TODO TEMP
+        showFlagAboutItem();
+        onTotalQueueChanged(2);
+
+        View header = view.findViewById(R.id.drawer_header);
+        header.setOnClickListener(v -> onHeaderClick());
+
+        TextView alovoaNameText = view.findViewById(R.id.alovoa_name_text);
+        TextView alovoaNameSlogan = view.findViewById(R.id.alovoa_slogan_text);
 
         Typeface tfMedium = Typeface.createFromAsset( getActivity().getAssets(), "font/montserrat_medium.ttf");
         Typeface tfExtraBold = Typeface.createFromAsset( getActivity().getAssets(), "font/montserrat_extrabold.ttf");
 
         alovoaNameText.setTypeface(tfExtraBold);
         alovoaNameSlogan.setTypeface(tfMedium);
-
-        return rootView;
     }
 
     private void updateItems() {
@@ -150,7 +159,18 @@ public final class NavigationDrawerFragment extends Fragment {
     }
 
     private void showFlagAboutItem() {
-        if (aboutBadge != null) aboutBadge.setVisibility(View.VISIBLE);
+        binding.drawerAboutBtnBadge.setVisibility(View.VISIBLE);
+    }
+
+    private void onTotalQueueChanged(int totalQueue) {
+        if (totalQueue > 0) {
+            String text = (totalQueue > 99) ? "99+" : Integer.toString(totalQueue);
+            if (1 == text.length()) text = " " + text + " ";
+            binding.drawerQueueBtnBadge.setText(text);
+            binding.drawerQueueBtnBadge.setVisibility(View.VISIBLE);
+        } else {
+            binding.drawerQueueBtnBadge.setVisibility(View.GONE);
+        }
     }
 
     private void showFlagAlerts(Map<Site, UpdateInfo.SourceAlert> alerts) {
@@ -186,8 +206,8 @@ public final class NavigationDrawerFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDrawerClosed(CommunicationEvent event) {
-        if (event.getRecipient() != RC_DRAWER || null == recyclerView) return;
-        if (EV_CLOSED == event.getType()) recyclerView.scrollToPosition(0);
+        if (event.getRecipient() != RC_DRAWER) return;
+        if (EV_CLOSED == event.getType()) binding.drawerList.scrollToPosition(0);
     }
 
     private void onAboutClick() {

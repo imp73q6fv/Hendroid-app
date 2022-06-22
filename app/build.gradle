@@ -34,8 +34,8 @@ android {
         applicationId "org.nonononoki.hendroid"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 196
-        versionName '1.16.3'
+        versionCode 197
+        versionName '1.16.4'
 
         def includeObjectBoxBrowser = System.getenv("INCLUDE_OBJECTBOX_BROWSER") ?: "false"
         def includeLeakCanary = System.getenv("INCLUDE_LEAK_CANARY") ?: "false"
@@ -46,7 +46,7 @@ android {
         buildConfigField 'String', 'GITHUB_API_URL', '"https://api.github.com/repos/avluis/Hentoid/"'
 
         proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        resConfigs 'en', 'ru', 'it', 'uk'
+        resConfigs 'en', 'ru', 'it', 'uk', 'hu'
 
         // Only include complete translations
 
@@ -252,7 +252,7 @@ dependencies {
 
     // ObjectBox browser dependencies must be set before applying ObjectBox plugin so it does not add objectbox-android
     // (would result in two conflicting versions, e.g. "Duplicate files copied in APK lib/armeabi-v7a/libobjectbox.so").
-    def objectbox_version = "3.1.1"
+    def objectbox_version = "3.2.0"
     if (includeObjectBoxBrowser.toBoolean()) {
         debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectbox_version"
         releaseImplementation "io.objectbox:objectbox-android:$objectbox_version"

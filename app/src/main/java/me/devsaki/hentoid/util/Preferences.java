@@ -439,6 +439,10 @@ public final class Preferences {
         return sharedPreferences.getBoolean(Key.VIEWER_KEEP_SCREEN_ON, Default.VIEWER_KEEP_SCREEN_ON);
     }
 
+    public static boolean isViewerDisplayAroundNotch() {
+        return sharedPreferences.getBoolean(Key.VIEWER_DISPLAY_AROUND_NOTCH, Default.VIEWER_DISPLAY_AROUND_NOTCH);
+    }
+
     public static int getContentDisplayMode(final Map<String, String> bookPrefs) {
         if (Constant.VIEWER_ORIENTATION_HORIZONTAL == getContentOrientation(bookPrefs))
             return Integer.parseInt(sharedPreferences.getString(Key.VIEWER_IMAGE_DISPLAY, Integer.toString(Default.VIEWER_IMAGE_DISPLAY)) + "");
@@ -532,6 +536,10 @@ public final class Preferences {
         return sharedPreferences.getBoolean(Key.VIEWER_PAGE_TURN_KEYBOARD, Default.VIEWER_PAGE_TURN_KEYBOARD);
     }
 
+    public static boolean isViewerVolumeToSwitchBooks() {
+        return sharedPreferences.getBoolean(Key.VIEWER_BOOK_SWITCH_VOLUME, Default.VIEWER_BOOK_SWITCH_VOLUME);
+    }
+
     public static boolean isViewerOpenBookInGalleryMode() {
         return sharedPreferences.getBoolean(Key.VIEWER_OPEN_GALLERY, Default.VIEWER_OPEN_GALLERY);
     }
@@ -554,6 +562,16 @@ public final class Preferences {
                 .apply();
     }
 
+    public static int getViewerSlideshowDelayVertical() {
+        return Integer.parseInt(sharedPreferences.getString(Key.VIEWER_SLIDESHOW_DELAY_VERTICAL, Integer.toString(Default.VIEWER_SLIDESHOW_DELAY_VERTICAL)) + "");
+    }
+
+    public static void setViewerSlideshowDelayVertical(int value) {
+        sharedPreferences.edit()
+                .putString(Key.VIEWER_SLIDESHOW_DELAY_VERTICAL, Integer.toString(value))
+                .apply();
+    }
+
     public static int getViewerSeparatingBars() {
         return Integer.parseInt(sharedPreferences.getString(Key.VIEWER_SEPARATING_BARS, Integer.toString(Default.VIEWER_SEPARATING_BARS)) + "");
     }
@@ -564,6 +582,10 @@ public final class Preferences {
 
     public static int getViewerCapTapZoom() {
         return Integer.parseInt(sharedPreferences.getString(Key.VIEWER_CAP_TAP_ZOOM, Integer.toString(Default.VIEWER_CAP_TAP_ZOOM)) + "");
+    }
+
+    public static boolean isViewerMaintainHorizontalZoom() {
+        return sharedPreferences.getBoolean(Key.VIEWER_MAINTAIN_HORIZONTAL_ZOOM, Default.VIEWER_MAINTAIN_HORIZONTAL_ZOOM);
     }
 
     public static boolean isViewerAutoRotate() {
@@ -879,6 +901,7 @@ public final class Preferences {
         static final String FOLDER_TRUNCATION_LISTS = "pref_folder_trunc_lists";
         static final String VIEWER_RESUME_LAST_LEFT = "pref_viewer_resume_last_left";
         public static final String VIEWER_KEEP_SCREEN_ON = "pref_viewer_keep_screen_on";
+        public static final String VIEWER_DISPLAY_AROUND_NOTCH = "pref_viewer_display_notch";
         public static final String VIEWER_IMAGE_DISPLAY = "pref_viewer_image_display";
         public static final String VIEWER_RENDERING = "pref_viewer_rendering";
         public static final String VIEWER_BROWSE_MODE = "pref_viewer_browse_mode";
@@ -894,11 +917,14 @@ public final class Preferences {
         static final String VIEWER_PAGE_TURN_TAP_2X = "pref_viewer_page_turn_tap_2x";
         static final String VIEWER_PAGE_TURN_VOLUME = "pref_viewer_page_turn_volume";
         static final String VIEWER_PAGE_TURN_KEYBOARD = "pref_viewer_page_turn_keyboard";
+        static final String VIEWER_BOOK_SWITCH_VOLUME = "pref_viewer_book_switch_volume";
         public static final String VIEWER_SEPARATING_BARS = "pref_viewer_separating_bars";
         static final String VIEWER_READ_THRESHOLD = "pref_viewer_read_threshold";
         static final String VIEWER_SLIDESHOW_DELAY = "pref_viewer_slideshow_delay";
+        static final String VIEWER_SLIDESHOW_DELAY_VERTICAL = "pref_viewer_slideshow_delay_vertical";
         public static final String VIEWER_HOLD_TO_ZOOM = "pref_viewer_zoom_holding";
         public static final String VIEWER_CAP_TAP_ZOOM = "pref_viewer_cap_tap_zoom";
+        public static final String VIEWER_MAINTAIN_HORIZONTAL_ZOOM = "pref_viewer_maintain_horizontal_zoom";
         public static final String VIEWER_AUTO_ROTATE = "pref_viewer_auto_rotate";
         static final String LAST_KNOWN_APP_VERSION_CODE = "last_known_app_version_code";
         public static final String COLOR_THEME = "pref_color_theme";
@@ -981,6 +1007,7 @@ public final class Preferences {
         static final int FOLDER_TRUNCATION = Constant.TRUNCATE_FOLDER_100;
         static final boolean VIEWER_RESUME_LAST_LEFT = true;
         static final boolean VIEWER_KEEP_SCREEN_ON = true;
+        static final boolean VIEWER_DISPLAY_AROUND_NOTCH = true;
         static final int VIEWER_IMAGE_DISPLAY = Constant.VIEWER_DISPLAY_FIT;
         static final int VIEWER_RENDERING = Constant.VIEWER_RENDERING_SHARP;
         static final int VIEWER_BROWSE_MODE = Constant.VIEWER_BROWSE_NONE;
@@ -994,14 +1021,17 @@ public final class Preferences {
         static final boolean VIEWER_PAGE_TURN_TAP_2X = false;
         static final boolean VIEWER_PAGE_TURN_VOLUME = true;
         static final boolean VIEWER_PAGE_TURN_KEYBOARD = true;
+        static final boolean VIEWER_BOOK_SWITCH_VOLUME = false;
         static final boolean VIEWER_SWIPE_TO_FLING = false;
         static final boolean VIEWER_INVERT_VOLUME_ROCKER = false;
         //static final int PREF_DARK_MODE = (Build.VERSION.SDK_INT > P) ? Constant.DARK_MODE_DEVICE : Constant.DARK_MODE_ON;
         static final int VIEWER_SEPARATING_BARS = Constant.VIEWER_SEPARATING_BARS_OFF;
         static final int VIEWER_READ_THRESHOLD = Constant.VIEWER_READ_THRESHOLD_1;
         public static final int VIEWER_SLIDESHOW_DELAY = Constant.VIEWER_SLIDESHOW_DELAY_2;
+        public static final int VIEWER_SLIDESHOW_DELAY_VERTICAL = Constant.VIEWER_SLIDESHOW_DELAY_2;
         static final boolean VIEWER_HOLD_TO_ZOOM = false;
         static final int VIEWER_CAP_TAP_ZOOM = Constant.VIEWER_CAP_TAP_ZOOM_NONE;
+        static final boolean VIEWER_MAINTAIN_HORIZONTAL_ZOOM = false;
         static final boolean VIEWER_AUTO_ROTATE = false;
         public static final int COLOR_THEME = Constant.COLOR_THEME_LIGHT;
         static final boolean QUEUE_AUTOSTART = true;
