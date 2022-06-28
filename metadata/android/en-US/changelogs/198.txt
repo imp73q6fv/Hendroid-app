@@ -1,0 +1,16 @@
+New
+
+    The app is now available in Korean on devices where default language is Korean
+Changed
+
+    Clearer feedback and more cases handled when the webview package is unavailable
+Fixed
+
+    Library : Issue with groups disappearing - please reinstall the app from scratch
+    Library : Extra '/' character appearing when selecting an item from search history
+    Library : Reverted scrolling behaviour after reading back to how it was in v1.16.4
+    Library / merging books : Make sure the merged book is created in a separate folder when keeping the title of the 1st merged book
+    Library / left drawer : About button stops showing the "update ready" badge all the time (regression from v1.16.4)
+Technical
+
+    Reader : Better performance when reading large books while downloading

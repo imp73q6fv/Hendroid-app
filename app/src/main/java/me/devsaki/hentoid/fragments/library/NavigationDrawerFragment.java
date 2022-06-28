@@ -115,9 +115,6 @@ public final class NavigationDrawerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel.getTotalQueue().observe(getViewLifecycleOwner(), this::onTotalQueueChanged);
-        // TODO TEMP
-        showFlagAboutItem();
-        onTotalQueueChanged(2);
 
         View header = view.findViewById(R.id.drawer_header);
         header.setOnClickListener(v -> onHeaderClick());
