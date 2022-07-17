@@ -187,6 +187,9 @@
         <item quantity="one"><x:g example="1" id="pages_count">%1$d</x:g> page / <x:g example="3.88" id="size_mb">%2$.1f</x:g> MB</item>
         <item quantity="other"><x:g example="2" id="pages_count">%1$d</x:g> pages / <x:g example="3.88" id="size_mb">%2$.1f</x:g> MB</item>
     </plurals>
+    <string name="work_pages_duplicate_dialog_library">Pages (in library): %d</string>
+    <string name="work_pages_duplicate_dialog_queue">Pages (in queue): %d</string>
+    <string name="work_pages_duplicate_dialog_source">Pages (this source): %d</string>
     <string name="library_metrics_storage"><x:g example="3.88" id="size_mb">%.0f</x:g> MB</string>
     <string name="redownload_queue_progress">Redownloading selected books</string>
     <string name="errortype_parsing">Parsing</string>
@@ -571,7 +574,7 @@
     <string name="pin_lock_on_restore">Lock when restored\nfrom background</string>
 
     <!-- About Activity -->
-    <string name="about1"><b>Hendroid</b> is a Doujinshi &amp; H-Manga archiving app. Hendroid is a fork of the app <b>Hendroid</b>, which was originally created by <b>Cesar Arasaki</b>.</string>
+    <string name="about1"><b>Hendroid</b> is a Doujinshi &amp; H-Manga archiving app. Hendroid is a fork of the app <b>Hentoid</b>, which was originally created by <b>Cesar Arasaki</b>.</string>
     <string name="personalDataStatement1"><b>PERSONAL DATA PRIVACY STATEMENT</b>\n\nHendroid is a free and open-source software maintained by the Hendroid Community</string>
     <string name="personalDataStatement2">No personal data is collected by the app, but may be collected by external sites.</string>
     <string name="about_licenses">Display Licenses</string>
@@ -643,6 +646,14 @@
         <item quantity="other"><x:g example="2" id="count">%s</x:g> Results found</item>
     </plurals>
     <string name="search_select_a_filter">Select a filter</string>
+    <string name="search_location">Location</string>
+    <string name="search_location_entries_1">All locations</string>
+    <string name="search_type">Type</string>
+    <string name="search_type_entries_1">All book types</string>
+    <string name="search_type_entries_2">Folder</string>
+    <string name="search_type_entries_3">Streamed</string>
+    <string name="search_type_entries_4">Archive</string>
+    <string name="search_type_entries_5">Placeholder</string>
 
     <!-- DB migration & Maintenance -->
 

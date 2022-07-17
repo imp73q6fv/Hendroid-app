@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.annimon.stream.Stream;
@@ -87,7 +88,7 @@ public final class Preferences {
         }
 
         if (sharedPreferences.contains(Key.ORDER_CONTENT_LISTS)) {
-            int field = 0;
+            int field;
             boolean isDesc = false;
 
             switch (sharedPreferences.getInt(Key.ORDER_CONTENT_LISTS, Constant.ORDER_CONTENT_TITLE_ALPHA)) {
@@ -132,6 +133,7 @@ public final class Preferences {
                     break;
                 default:
                     // Nothing there
+                    field = 0;
             }
             sharedPreferences.edit().putInt(Key.ORDER_CONTENT_FIELD, field).apply();
             sharedPreferences.edit().putBoolean(Key.ORDER_CONTENT_DESC, isDesc).apply();
@@ -186,6 +188,18 @@ public final class Preferences {
         }
     }
 
+    private static int getIntPref(@NonNull String key, int defaultValue) {
+        if (null == sharedPreferences) return defaultValue;
+        else
+            return Integer.parseInt(sharedPreferences.getString(key, Integer.toString(defaultValue)) + "");
+    }
+
+    private static boolean getBoolPref(@NonNull String key, boolean defaultValue) {
+        if (null == sharedPreferences) return defaultValue;
+        else
+            return sharedPreferences.getBoolean(key, defaultValue);
+    }
+
 
     // ======= PROPERTIES GETTERS / SETTERS
 
@@ -201,18 +215,18 @@ public final class Preferences {
 
     /*
     public static boolean isAnalyticsEnabled() {
-        return sharedPreferences.getBoolean(Key.ANALYTICS_PREFERENCE, true);
+        return getBoolPref(Key.ANALYTICS_PREFERENCE, true);
     }
     */
 
     /*
     public static boolean isAutomaticUpdateEnabled() {
-        return sharedPreferences.getBoolean(Key.CHECK_UPDATES, Default.CHECK_UPDATES);
+        return getBoolPref(Key.CHECK_UPDATES, Default.CHECK_UPDATES);
     }
      */
 
     public static boolean isFirstRun() {
-        return sharedPreferences.getBoolean(Key.FIRST_RUN, Default.FIRST_RUN);
+        return getBoolPref(Key.FIRST_RUN, Default.FIRST_RUN);
     }
 
     public static void setIsFirstRun(boolean isFirstRun) {
@@ -222,7 +236,7 @@ public final class Preferences {
     }
 
     public static boolean isImportQueueEmptyBooks() {
-        return sharedPreferences.getBoolean(Key.IMPORT_QUEUE_EMPTY, Default.IMPORT_QUEUE_EMPTY);
+        return getBoolPref(Key.IMPORT_QUEUE_EMPTY, Default.IMPORT_QUEUE_EMPTY);
     }
 
     @Deprecated
@@ -231,13 +245,17 @@ public final class Preferences {
     }
 
     public static int getLibraryDisplay() {
-        return Integer.parseInt(sharedPreferences.getString(Key.LIBRARY_DISPLAY, Integer.toString(Default.LIBRARY_DISPLAY)) + "");
+        return getIntPref(Key.LIBRARY_DISPLAY, Default.LIBRARY_DISPLAY);
     }
 
     public static void setLibraryDisplay(int displayMode) {
         sharedPreferences.edit()
                 .putString(Key.LIBRARY_DISPLAY, Integer.toString(displayMode))
                 .apply();
+    }
+
+    public static boolean isForceEnglishLocale() {
+        return getBoolPref(Key.FORCE_ENGLISH, Default.FORCE_ENGLISH);
     }
 
     public static int getContentSortField() {
@@ -631,11 +649,11 @@ public final class Preferences {
     }
 
     public static int getDlRetriesNumber() {
-        return Integer.parseInt(sharedPreferences.getString(Key.DL_RETRIES_NUMBER, Integer.toString(Default.DL_RETRIES_NUMBER)) + "");
+        return getIntPref(Key.DL_RETRIES_NUMBER, Default.DL_RETRIES_NUMBER);
     }
 
     public static int getDlRetriesMemLimit() {
-        return Integer.parseInt(sharedPreferences.getString(Key.DL_RETRIES_MEM_LIMIT, Integer.toString(Default.DL_RETRIES_MEM_LIMIT)) + "");
+        return getIntPref(Key.DL_RETRIES_MEM_LIMIT, Default.DL_RETRIES_MEM_LIMIT);
     }
 
     public static List<String> getBlockedTags() {
@@ -661,7 +679,7 @@ public final class Preferences {
     }
 
     public static int getColorTheme() {
-        return Integer.parseInt(sharedPreferences.getString(Key.COLOR_THEME, Integer.toString(Default.COLOR_THEME)) + "");
+        return getIntPref(Key.COLOR_THEME, Default.COLOR_THEME);
     }
 
     public static void setColorTheme(int colorTheme) {
@@ -865,6 +883,7 @@ public final class Preferences {
         public static final String DELETE_ALL_EXCEPT_FAVS = "pref_delete_all_except_favs";
         static final String WELCOME_DONE = "pref_welcome_done";
         static final String VERSION_KEY = "prefs_version";
+        public static final String FORCE_ENGLISH = "force_english";
         public static final String LIBRARY_DISPLAY = "pref_library_display";
         public static final String IMPORT_QUEUE_EMPTY = "pref_import_queue_empty";
         static final String QUANTITY_PER_PAGE_LISTS = "pref_quantity_per_page_lists";
@@ -893,8 +912,8 @@ public final class Preferences {
         static final String BROWSER_AUGMENTED = "pref_browser_augmented";
         public static final String BROWSER_MARK_DOWNLOADED = "browser_mark_downloaded";
         public static final String BROWSER_DL_ACTION = "pref_browser_dl_action";
-        static final String BROWSER_QUICK_DL = "pref_browser_quick_dl";
-        static final String BROWSER_QUICK_DL_THRESHOLD = "pref_browser_quick_dl_threshold";
+        public static final String BROWSER_QUICK_DL = "pref_browser_quick_dl";
+        public static final String BROWSER_QUICK_DL_THRESHOLD = "pref_browser_quick_dl_threshold";
         public static final String BROWSER_DNS_OVER_HTTPS = "pref_browser_dns_over_https";
         public static final String BROWSER_CLEAR_COOKIES = "pref_browser_clear_cookies";
         public static final String BROWSER_NHENTAI_INVISIBLE_BLACKLIST = "pref_nhentai_invisible_blacklist";
@@ -979,6 +998,7 @@ public final class Preferences {
         }
 
         public static final int LIBRARY_DISPLAY = Constant.LIBRARY_DISPLAY_LIST;
+        static final boolean FORCE_ENGLISH = false;
         static final int QUANTITY_PER_PAGE = 20;
         public static final int ORDER_CONTENT_FIELD = Constant.ORDER_FIELD_TITLE;
         public static final int ORDER_GROUP_FIELD = Constant.ORDER_FIELD_TITLE;

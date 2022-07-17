@@ -1,0 +1,18 @@
+New
+
+The app is now available in Japanese on devices where default language is Japanese
+Browser / duplicate detector : Indicate the number of pages of the online book
+Browser : Quick download (long tap) now displays visual feedback during processing
+Advanced search : New filters for primary and external books
+Advanced search : New filters for folders, archives, streamed books and placeholder books
+Settings : New option to force the app language to english
+Fixed
+
+ASM Hentai : Align with new image hosts (you can fix your failed downloads by using the "redownload from scratch" feature)
+Hentai2Read : Half-chapters (e.g. 4.5) can now be downloaded
+Toonily : Fix detecting the wrong total number of pages on certain books
+Luscious : Disable the "adblock detected" popup
+Exhentai, E-hentai, Pixiv : Don't display "Book can't be downloaded, sorry" during navigation when "Mark as downloaded" is enabled
+IMHentai : Remove ads
+Library : Leave selection mode after sharing items
+Tools : Fix crash when clearing browser cookies

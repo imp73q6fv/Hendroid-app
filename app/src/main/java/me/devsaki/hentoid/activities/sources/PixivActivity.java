@@ -86,7 +86,7 @@ public class PixivActivity extends BaseWebActivity {
             for (String s : NAVIGATION_QUERIES)
                 if (url.contains(s)) {
                     compositeDisposable.add(
-                            Completable.fromRunnable(() -> activity.onPageStarted(url, isGalleryPage(url), false, false))
+                            Completable.fromRunnable(() -> activity.onPageStarted(url, isGalleryPage(url), false, false, null))
                                     .subscribeOn(AndroidSchedulers.mainThread())
                                     .subscribe()
                     );
@@ -98,21 +98,23 @@ public class PixivActivity extends BaseWebActivity {
         // Call the API without using BaseWebActivity.parseResponse
         @Override
         protected WebResourceResponse parseResponse(@NonNull String urlStr, @Nullable Map<String, String> requestHeaders, boolean analyzeForDownload, boolean quickDownload) {
-            activity.onGalleryPageStarted();
+            if (analyzeForDownload || quickDownload) {
+                activity.onGalleryPageStarted();
 
-            if (BuildConfig.DEBUG) Timber.v("WebView : parseResponse Pixiv %s", urlStr);
+                if (BuildConfig.DEBUG) Timber.v("WebView : parseResponse Pixiv %s", urlStr);
 
-            ContentParser contentParser = new PixivContent();
-            compositeDisposable.add(Single.fromCallable(() -> contentParser.toContent(urlStr))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.computation())
-                    .map(content -> super.processContent(content, content.getGalleryUrl(), quickDownload))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            content2 -> activity.onResultReady(content2, quickDownload),
-                            Timber::e
-                    )
-            );
+                ContentParser contentParser = new PixivContent();
+                compositeDisposable.add(Single.fromCallable(() -> contentParser.toContent(urlStr))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.computation())
+                        .map(content -> super.processContent(content, content.getGalleryUrl(), quickDownload))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                content2 -> activity.onResultReady(content2, quickDownload),
+                                Timber::e
+                        )
+                );
+            }
             return null;
         }
     }
