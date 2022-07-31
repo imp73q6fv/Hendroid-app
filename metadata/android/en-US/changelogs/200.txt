@@ -1,0 +1,16 @@
+New
+
+    Queue : You can now import a list of downloads from a text file (URLs or nhentai launch codes; one per line)
+    Reader : New "Mark as completed after N% pages" setting
+    Reader : Display mode is now a per-book setting
+
+Fixed
+
+    Hitomi : Improve upload date parsing
+    Hitomi : Experimental white screen bug fix
+    Import : Streamed books can now be imported from the external library
+    Library : Archives can now be selected for mass deletion (if the corresponding setting has been enabled)
+    Reader : 500ms page turn now works as expected
+    Reader : Vertical scrolling in slideshow mode doesn't stop itself anymore
+    A few crashes here and there
+    
