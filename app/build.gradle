@@ -34,8 +34,8 @@ android {
         applicationId "org.nonononoki.hendroid"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 199
-        versionName '1.16.6'
+        versionCode 200
+        versionName '1.16.7'
 
         def includeObjectBoxBrowser = System.getenv("INCLUDE_OBJECTBOX_BROWSER") ?: "false"
         def includeLeakCanary = System.getenv("INCLUDE_LEAK_CANARY") ?: "false"

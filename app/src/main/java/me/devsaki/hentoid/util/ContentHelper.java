@@ -79,6 +79,7 @@ import me.devsaki.hentoid.util.exception.ContentNotProcessedException;
 import me.devsaki.hentoid.util.exception.EmptyResultException;
 import me.devsaki.hentoid.util.exception.FileNotProcessedException;
 import me.devsaki.hentoid.util.exception.LimitReachedException;
+import me.devsaki.hentoid.util.network.CloudflareHelper;
 import me.devsaki.hentoid.util.network.HttpHelper;
 import me.devsaki.hentoid.util.network.WebkitPackageHelper;
 import me.devsaki.hentoid.util.string_similarity.Cosine;
@@ -316,6 +317,7 @@ public final class ContentHelper {
 
     /**
      * Update the given Content's number of reads in both DB and JSON file
+     * TODO update doc
      *
      * @param context Context to use for the action
      * @param dao     DAO to use for the action
@@ -327,9 +329,11 @@ public final class ContentHelper {
             @NonNull Content content,
             @NonNull List<ImageFile> images,
             int targetLastReadPageIndex,
-            boolean updateReads) {
+            boolean updateReads,
+            boolean markAsCompleted) {
         content.setLastReadPageIndex(targetLastReadPageIndex);
         if (updateReads) content.increaseReads().setLastReadDate(Instant.now().toEpochMilli());
+        if (markAsCompleted) content.setCompleted(true);
         dao.replaceImageList(content.getId(), images);
         dao.insertContent(content);
         persistJson(context, content);
@@ -1077,6 +1081,62 @@ public final class ContentHelper {
             Timber.w(e);
             return new ImmutablePair<>(content, Optional.empty());
         }
+    }
+
+    // TODO factorize with reparseFromScratch
+    public static Optional<Content> parseFromScratch(@NonNull final String url) throws IOException, CloudflareHelper.CloudflareProtectedException {
+        Helper.assertNonUiThread();
+
+        Site site = Site.searchByUrl(url);
+        if (null == site || Site.NONE == site) return Optional.empty();
+
+        List<Pair<String, String>> requestHeadersList = new ArrayList<>();
+        requestHeadersList.add(new Pair<>(HttpHelper.HEADER_REFERER_KEY, url));
+        String cookieStr = HttpHelper.getCookies(url, requestHeadersList, site.useMobileAgent(), site.useHentoidAgent(), site.useWebviewAgent());
+        if (!cookieStr.isEmpty())
+            requestHeadersList.add(new Pair<>(HttpHelper.HEADER_COOKIE_KEY, cookieStr));
+
+        Response response = HttpHelper.getOnlineResourceFast(url, requestHeadersList, site.useMobileAgent(), site.useHentoidAgent(), site.useWebviewAgent());
+
+        // Raise exception if blocked by Cloudflare
+        if (503 == response.code() && site.isUseCloudflare())
+            throw new CloudflareHelper.CloudflareProtectedException();
+
+        // Scram if the response is a redirection or an error
+        if (response.code() >= 300) return Optional.empty();
+
+        // Scram if the response is something else than html
+        Pair<String, String> contentType = HttpHelper.cleanContentType(StringHelper.protect(response.header(HEADER_CONTENT_TYPE, "")));
+        if (!contentType.first.isEmpty() && !contentType.first.equals("text/html"))
+            return Optional.empty();
+
+        // Scram if the response is empty
+        ResponseBody body = response.body();
+        if (null == body) return Optional.empty();
+
+        Class<? extends ContentParser> c = ContentParserFactory.getInstance().getContentParserClass(site);
+        final Jspoon jspoon = Jspoon.create();
+        HtmlAdapter<? extends ContentParser> htmlAdapter = jspoon.adapter(c); // Unchecked but alright
+
+        ContentParser contentParser = htmlAdapter.fromInputStream(body.byteStream(), new URL(url));
+        Content newContent = contentParser.toContent(url);
+
+        if (newContent.getStatus() != null && newContent.getStatus().equals(StatusContent.IGNORED)) {
+            String canonicalUrl = contentParser.getCanonicalUrl();
+            if (!canonicalUrl.isEmpty() && !canonicalUrl.equalsIgnoreCase(url))
+                return parseFromScratch(canonicalUrl);
+            else return Optional.empty();
+        }
+
+        // Clear existing chapters to avoid issues with extra chapter detection
+        newContent.clearChapters();
+
+        // Save cookies for future calls during download
+        Map<String, String> params = new HashMap<>();
+        if (!cookieStr.isEmpty()) params.put(HttpHelper.HEADER_COOKIE_KEY, cookieStr);
+
+        newContent.setDownloadParams(JsonHelper.serializeToJson(params, JsonHelper.MAP_STRINGS));
+        return Optional.of(newContent);
     }
 
     /**

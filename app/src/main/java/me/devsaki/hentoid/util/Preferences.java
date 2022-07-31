@@ -462,10 +462,18 @@ public final class Preferences {
     }
 
     public static int getContentDisplayMode(final Map<String, String> bookPrefs) {
-        if (Constant.VIEWER_ORIENTATION_HORIZONTAL == getContentOrientation(bookPrefs))
-            return Integer.parseInt(sharedPreferences.getString(Key.VIEWER_IMAGE_DISPLAY, Integer.toString(Default.VIEWER_IMAGE_DISPLAY)) + "");
-        else
+        if (Constant.VIEWER_ORIENTATION_HORIZONTAL == getContentOrientation(bookPrefs)) {
+            if (bookPrefs != null && bookPrefs.containsKey(Key.VIEWER_IMAGE_DISPLAY)) {
+                String value = bookPrefs.get(Key.VIEWER_IMAGE_DISPLAY);
+                if (value != null) return Integer.parseInt(value);
+            }
+            return getViewerDisplayMode();
+        } else
             return Constant.VIEWER_DISPLAY_FIT; // The only relevant mode for vertical (aka. webtoon) display
+    }
+
+    public static int getViewerDisplayMode() {
+        return Integer.parseInt(sharedPreferences.getString(Key.VIEWER_IMAGE_DISPLAY, Integer.toString(Default.VIEWER_IMAGE_DISPLAY)) + "");
     }
 
     public static int getContentBrowseMode(final Map<String, String> bookPrefs) {
@@ -566,8 +574,12 @@ public final class Preferences {
         return sharedPreferences.getBoolean(Key.VIEWER_CONTINUOUS, Default.VIEWER_CONTINUOUS);
     }
 
-    public static int getViewerReadThreshold() {
-        return Integer.parseInt(sharedPreferences.getString(Key.VIEWER_READ_THRESHOLD, Integer.toString(Default.VIEWER_READ_THRESHOLD)) + "");
+    public static int getViewerPageReadThreshold() {
+        return Integer.parseInt(sharedPreferences.getString(Key.VIEWER_PAGE_READ_THRESHOLD, Integer.toString(Default.VIEWER_PAGE_READ_THRESHOLD)) + "");
+    }
+
+    public static int getViewerRatioCompletedThreshold() {
+        return Integer.parseInt(sharedPreferences.getString(Key.VIEWER_RATIO_COMPLETED_THRESHOLD, Integer.toString(Default.VIEWER_RATIO_COMPLETED_THRESHOLD)) + "");
     }
 
     public static int getViewerSlideshowDelay() {
@@ -938,7 +950,8 @@ public final class Preferences {
         static final String VIEWER_PAGE_TURN_KEYBOARD = "pref_viewer_page_turn_keyboard";
         static final String VIEWER_BOOK_SWITCH_VOLUME = "pref_viewer_book_switch_volume";
         public static final String VIEWER_SEPARATING_BARS = "pref_viewer_separating_bars";
-        static final String VIEWER_READ_THRESHOLD = "pref_viewer_read_threshold";
+        static final String VIEWER_PAGE_READ_THRESHOLD = "pref_viewer_read_threshold";
+        static final String VIEWER_RATIO_COMPLETED_THRESHOLD = "pref_viewer_ratio_completed_threshold";
         static final String VIEWER_SLIDESHOW_DELAY = "pref_viewer_slideshow_delay";
         static final String VIEWER_SLIDESHOW_DELAY_VERTICAL = "pref_viewer_slideshow_delay_vertical";
         public static final String VIEWER_HOLD_TO_ZOOM = "pref_viewer_zoom_holding";
@@ -1046,7 +1059,8 @@ public final class Preferences {
         static final boolean VIEWER_INVERT_VOLUME_ROCKER = false;
         //static final int PREF_DARK_MODE = (Build.VERSION.SDK_INT > P) ? Constant.DARK_MODE_DEVICE : Constant.DARK_MODE_ON;
         static final int VIEWER_SEPARATING_BARS = Constant.VIEWER_SEPARATING_BARS_OFF;
-        static final int VIEWER_READ_THRESHOLD = Constant.VIEWER_READ_THRESHOLD_1;
+        static final int VIEWER_PAGE_READ_THRESHOLD = Constant.VIEWER_READ_THRESHOLD_1;
+        static final int VIEWER_RATIO_COMPLETED_THRESHOLD = Constant.VIEWER_COMPLETED_RATIO_THRESHOLD_NONE;
         public static final int VIEWER_SLIDESHOW_DELAY = Constant.VIEWER_SLIDESHOW_DELAY_2;
         public static final int VIEWER_SLIDESHOW_DELAY_VERTICAL = Constant.VIEWER_SLIDESHOW_DELAY_2;
         static final boolean VIEWER_HOLD_TO_ZOOM = false;
@@ -1055,7 +1069,7 @@ public final class Preferences {
         static final boolean VIEWER_AUTO_ROTATE = false;
         public static final int COLOR_THEME = Constant.COLOR_THEME_LIGHT;
         static final boolean QUEUE_AUTOSTART = true;
-        static final int QUEUE_NEW_DOWNLOADS_POSITION = Constant.QUEUE_NEW_DOWNLOADS_POSITION_BOTTOM;
+        public static final int QUEUE_NEW_DOWNLOADS_POSITION = Constant.QUEUE_NEW_DOWNLOADS_POSITION_BOTTOM;
         static final boolean QUEUE_WIFI_ONLY = false;
         static final boolean DL_SIZE_WIFI = false;
         static final int DL_SIZE_WIFI_THRESHOLD = 40;
@@ -1168,10 +1182,19 @@ public final class Preferences {
         public static final int VIEWER_SEPARATING_BARS_MEDIUM = 2;
         public static final int VIEWER_SEPARATING_BARS_LARGE = 3;
 
+        public static final int VIEWER_READ_THRESHOLD_NONE = -1;
         public static final int VIEWER_READ_THRESHOLD_1 = 0;
         public static final int VIEWER_READ_THRESHOLD_2 = 1;
         public static final int VIEWER_READ_THRESHOLD_5 = 2;
         public static final int VIEWER_READ_THRESHOLD_ALL = 3;
+
+        public static final int VIEWER_COMPLETED_RATIO_THRESHOLD_NONE = -1;
+        public static final int VIEWER_COMPLETED_RATIO_THRESHOLD_10 = 0;
+        public static final int VIEWER_COMPLETED_RATIO_THRESHOLD_25 = 1;
+        public static final int VIEWER_COMPLETED_RATIO_THRESHOLD_33 = 2;
+        public static final int VIEWER_COMPLETED_RATIO_THRESHOLD_50 = 3;
+        public static final int VIEWER_COMPLETED_RATIO_THRESHOLD_75 = 4;
+        public static final int VIEWER_COMPLETED_RATIO_THRESHOLD_ALL = 99;
 
         public static final int VIEWER_SLIDESHOW_DELAY_2 = 0;
         public static final int VIEWER_SLIDESHOW_DELAY_4 = 1;

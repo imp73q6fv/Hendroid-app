@@ -248,6 +248,46 @@ public class Content implements Serializable {
         this.uniqueSiteId = uniqueSiteId;
     }
 
+    public static String transformRawUrl(@NonNull final Site site, @NonNull final String url) {
+        switch (site) {
+            case TSUMINO:
+                return url.replace("/Read/Index", "");
+            case PURURIN:
+                return url.replace(HttpHelper.getProtocol(url) + "://pururin.to/gallery", "");
+            case NHENTAI:
+                return url.replace(site.getUrl(), "").replace("/g", "").replaceFirst("/1/$", "/");
+            case MUSES:
+                return url.replace(site.getUrl(), "").replace("https://comics.8muses.com", "");
+            case MRM:
+                return url.replace(site.getUrl(), "").split("/")[0];
+            case HITOMI:
+                return url.replace(site.getUrl(), "").replace("/reader", "").replace("/galleries", "");
+            case MANHWA18:
+            case IMHENTAI:
+            case HENTAIFOX:
+                return url.replace(site.getUrl(), "").replace("/gallery", "");
+            case ASMHENTAI:
+            case ASMHENTAI_COMICS:
+                return url.substring(url.indexOf("/gallery/") + 8, url.length() - 2);
+            case PIXIV:
+                return url.replace(site.getUrl(), "").replaceAll("^[a-z]{2}/", "");
+            case ALLPORNCOMIC:
+            case DOUJINS:
+            case HENTAI2READ:
+            case HBROWSE:
+            case MANHWA:
+            case MULTPORN:
+            case TOONILY:
+                return url.replace(site.getUrl(), "");
+            case PORNCOMIX:
+            case EHENTAI:
+            case EXHENTAI:
+            case LUSCIOUS:
+            default:
+                return url;
+        }
+    }
+
     private String computeUniqueSiteId() {
         String[] paths;
 
@@ -298,33 +338,6 @@ public class Content implements Serializable {
                 else return url;
             default:
                 return "";
-        }
-    }
-
-    /**
-     * @deprecated Used for upgrade purposes from old versions
-     */
-    @Deprecated
-    public String getOldUniqueSiteId() {
-        String[] paths;
-        switch (site) {
-            case PURURIN:
-                paths = url.split("/");
-                return paths[2].replace(".html", "") + "-" + paths[1];
-            case HITOMI:
-                paths = url.split("/");
-                return paths[1].replace(".html", "") + "-" +
-                        title.replaceAll("[^a-zA-Z0-9.-]", "_");
-            case ASMHENTAI:
-            case ASMHENTAI_COMICS:
-            case NHENTAI:
-            case PANDA:
-            case EHENTAI:
-            case EXHENTAI:
-            case TSUMINO:
-                return url.replace("/", "") + "-" + site.getDescription();
-            default:
-                return null;
         }
     }
 
@@ -443,6 +456,36 @@ public class Content implements Serializable {
         }
     }
 
+    public static String getGalleryUrlFromId(@NonNull Site site, @NonNull String id) {
+        switch (site) {
+            case HITOMI:
+                return site.getUrl() + "/galleries/" + id + ".html";
+            case NHENTAI:
+            case ASMHENTAI:
+            case ASMHENTAI_COMICS:
+                return site.getUrl() + "/g/" + id + "/";
+            case IMHENTAI:
+            case HENTAIFOX:
+                return site.getUrl() + "/gallery/" + id + "/";
+            case HENTAICAFE:
+                return site.getUrl() + "/hc.fyi/" + id;
+            case TSUMINO:
+                return site.getUrl() + "/entry/" + id;
+            case NEXUS:
+                return site.getUrl() + "/view/" + id;
+            case LUSCIOUS:
+                return site.getUrl().replace("manga", "albums") + id + "/";
+            case HBROWSE:
+                return site.getUrl() + id + "/c00001";
+            case PIXIV:
+                return site.getUrl() + "artworks/" + id;
+            case MULTPORN:
+                return site.getUrl() + "node/" + id;
+            default:
+                return site.getUrl();
+        }
+    }
+
     /**
      * Neutralizes the given cover URL to detect duplicate books
      *
@@ -488,8 +531,14 @@ public class Content implements Serializable {
         return (null == url) ? "" : url;
     }
 
+    public Content setRawUrl(@NonNull String url) {
+        return setUrl(transformRawUrl(site, url));
+    }
+
     public Content setUrl(String url) {
-        this.url = url;
+        if (url != null && site != null && url.startsWith("http"))
+            this.url = transformRawUrl(site, url);
+        else this.url = url;
         populateUniqueSiteId();
         return this;
     }
