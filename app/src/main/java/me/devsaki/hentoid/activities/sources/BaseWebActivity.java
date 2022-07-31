@@ -546,6 +546,11 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
         webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadWithOverviewMode(true);
 
+        webSettings.setAllowFileAccess(true);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        webSettings.setSupportMultipleWindows(true);
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+
         if (fetchHandler != null)
             webView.addJavascriptInterface(new FetchHandler(fetchHandler), "fetchHandler");
     }

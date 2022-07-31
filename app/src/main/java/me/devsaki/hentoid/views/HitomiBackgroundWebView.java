@@ -46,6 +46,12 @@ public class HitomiBackgroundWebView extends WebView {
         webSettings.setUseWideViewPort(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadWithOverviewMode(true);
+        webSettings.setDatabaseEnabled(true);
+
+        webSettings.setAllowFileAccess(true);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        webSettings.setSupportMultipleWindows(true);
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
         if (BuildConfig.DEBUG) setWebContentsDebuggingEnabled(true);
 

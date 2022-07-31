@@ -471,8 +471,6 @@ public class Content implements Serializable {
                 return site.getUrl() + "/hc.fyi/" + id;
             case TSUMINO:
                 return site.getUrl() + "/entry/" + id;
-            case NEXUS:
-                return site.getUrl() + "/view/" + id;
             case LUSCIOUS:
                 return site.getUrl().replace("manga", "albums") + id + "/";
             case HBROWSE:
