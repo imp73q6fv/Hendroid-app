@@ -4,8 +4,6 @@ import android.content.Context;
 
 import androidx.test.core.app.ApplicationProvider;
 
-//import com.google.firebase.FirebaseApp;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;

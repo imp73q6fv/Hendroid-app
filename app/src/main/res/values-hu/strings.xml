@@ -40,6 +40,7 @@
     <string name="_default">alapértelmezett</string>
     <string name="empty">üres</string>
     <string name="none">Egyik sem</string>
+    <string name="disabled_generic">Letiltva</string>
 <string name="title_activity_api29_migration">API 29 migráció</string>
     <string name="title_activity_downloads">Könyvtár</string>
     <string name="title_activity_queue">Várólista</string>
@@ -103,6 +104,7 @@
     <string name="invert_queue">Várakozási sor megfordítása</string>
     <string name="redownload_all">Összes újbóli letöltése</string>
     <string name="cancel_all_errors">Összes hibás letöltés visszavonása</string>
+    <string name="import_downloads">Letöltések importálása</string>
     <string name="move_top">Mozgatás a legtetejére</string>
     <string name="move_bottom">Mozgatás az aljára</string>
     <string name="queue_paused">Várakozási sor megállítva</string>
@@ -137,7 +139,8 @@
     <string name="step_remove_duplicate">Duplikátumok cseréje</string>
     <string name="help_swipe_cancel">A letöltéseket megszakíthatja, ha balra húzza őket.</string>
     <string name="redownloaded_error">Probléma merült fel az újbóli letöltés során - visszavonva</string>
-
+    <string name="redownloaded_missing_webview">Webview jelenleg nem elérhető, nem lehet újra letölteni jelenleg</string>
+    <string name="redownloaded_updating_webview">Webview jelenleg frissítés alatt áll, emiatt még nem lehet újra letölteni</string>
     <plurals name="redownloaded_scratch">
         <item quantity="one"><x:g example="1" id="number">%1$d</x:g>/<x:g example="42" id="total">%2$d</x:g> elem törölve újbóli letöltés gyanánt</item>
         <item quantity="other"><x:g example="2" id="number">%1$d</x:g>/<x:g example="42" id="total">%2$d</x:g> elem törölve újbóli letöltés gyanánt</item>
@@ -148,7 +151,8 @@
     <string name="notification_user_action_needed">Felhasználói beavatkozás szükséges</string>
     <string name="notification_action_dl_revive">Koppintson ide a letöltés, újbóli elindításához</string>
     <string name="revive_wait">Kérjük, maradjon ezen a képernyőn, amíg a letöltés újból el nem indul.</string>
-
+    <string name="revive_missing_webview">WebView nem érhető el, jelenleg nem tudja újraindítani a letöltéseket</string>
+    <string name="revive_updating_webview">WebView jelenleg frissítés alatt áll, emiatt tudja újraindítani a letöltéseket</string>
     <string name="queue_json_saved">A várakozási sor JSON fájl-ba elmentésre került</string>
     <string name="queue_json_failed">A várakozási sort nem lehet elmenteni a JSON fájl-ba</string>
     <string name="queue_content_size_estimate">hátramaradt <x:g example="13.37" id="size_mbytes">%.1f</x:g> MB</string>
@@ -162,6 +166,12 @@
     <string name="download_notif_speed" tools:ignore="MissingTranslation"><x:g example="3.88" id="size_dled">%1$d</x:g><x:g example="/14.56" id="formatted_estimated_total">%2$s</x:g> MB @ <x:g example="102.4" id="speed_kbps">%3$d</x:g> KBps</string>
     <string name="download_notif_failed">A letöltés sikertelen</string>
     <string name="download_notif_failed_details">Nem lehet letölteni <x:g example="Cool H-Manga" id="book_name">%1$s</x:g>: nem lehet létrehozni a mappát <x:g example="/storage/emulated/0/Hendroid/nhentai/coolhmanga" id="path">%2$s</x:g>. Kérjük ellenőrizze a Hendroid mappát és próbálja meg újból letölteni azt a \'!\' gomb segítségével.</string>
+<string name="import_downloads_title">Letöltések importálása</string>
+    <plurals name="import_downloads_found">
+        <item quantity="one"><x:g example="1" id="downloads">%d</x:g> érvényes letöltés található</item>
+        <item quantity="other"><x:g example="2" id="downloads">%d</x:g> érvényes letöltések találhatóak</item>
+    </plurals>
+    <string name="importing_downloads">Letöltések importálása</string>
 <string name="work_series">Sorozat: <x:g example="original" id="series">%s</x:g></string>
     <string name="work_artist">Szerző: <x:g example="hayao miyazaki" id="artist">%s</x:g></string>
     <plurals name="work_pages_missing">
@@ -173,6 +183,9 @@
         <item quantity="one"><x:g example="1" id="pages_count">%1$d</x:g> oldal/ <x:g example="3.88" id="size_mb">%2$.1f</x:g> MB</item>
         <item quantity="other"><x:g example="2" id="pages_count">%1$d</x:g> oldalak/ <x:g example="3.88" id="size_mb">%2$.1f</x:g> MB</item>
     </plurals>
+    <string name="work_pages_duplicate_dialog_library">Oldalak (könyvtárban): %d</string>
+    <string name="work_pages_duplicate_dialog_queue">Oldalak (várakozási sorban): %d</string>
+    <string name="work_pages_duplicate_dialog_source">Oldalak (a forrásban): %d</string>
     <string name="library_metrics_storage"><x:g example="3.88" id="size_mb">%.0f</x:g> MB</string>
     <string name="redownload_queue_progress">A kiválasztott könyvek újbóli letöltése</string>
     <string name="errortype_parsing">Elemzés</string>
@@ -381,7 +394,7 @@
         <item quantity="one"><x:g example="1" id="number">%1$d</x:g>/<x:g example="7" id="total">%2$d</x:g> eredmény</item>
         <item quantity="other"><x:g example="2" id="number">%1$d</x:g>/<x:g example="7" id="total">%2$d</x:g> eredmények</item>
     </plurals>
-    <string name="restart_needed">\"A változtatások alkalmazásra kerülnek a Hendroid újraindításakor\"</string>
+    <string name="restart_needed">\"A változtatások alkalmazásra kerülnek a Hentoid újraindításakor\"</string>
     <plurals name="redownload_confirm" tools:ignore="ImpliedQuantity">
         <item quantity="one">A kiválasztott könyv újbóli letöltése a nulláról\?</item>
         <item quantity="other">A kiválasztott könyvek újbóli letöltése a nulláról\?</item>
@@ -494,6 +507,10 @@
     <string name="fav_help">Kedvencként megjelölni/nem megjelölni</string>
 <string name="launchcode_present">Már megvan ez a könyv. Szeretne más forrást keresni\?</string>
 <string name="updates_title">Frissítések</string>
+    <string name="checking_updates">Frissítések keresése</string>
+    <string name="update_available">Frissítés elérhető</string>
+    <string name="tap_to_download">Koppintson a letöltésért</string>
+    <string name="update_download_failed">Frissítés letöltése nem sikerült</string>
     <string name="tap_to_retry">Koppintson az újrapróbálásért</string>
     <string name="downloading_update">Frissítés letöltése</string>
     <string name="update_ready">Készen állunk a frissítés telepítésére!</string>
@@ -514,9 +531,9 @@
     <string name="pin_new_confirm">Kérjük írja be újra az új PIN-kódot</string>
     <string name="pin_explanation">Az alkalmazás zárolása funkció megakadályozza az alkalmazás jogosulatlan használatát (más személyek alól), azzal, hogy az alkalmazás indulásakor 4 számjegyű PIN-kódot kér</string>
     <string name="pin_lock_on_restore">Zárolás, amikor visszaállítva\ háttérből</string>
-<string name="about1"><b>A Hendroid</b> az egy Doujinshi &amp; Hentai Manga archiváló alkalmazás. A Hendroid alkalmazást eredetileg <b>Cesar Arasaki</b> készítette.</string>
-    <string name="personalDataStatement1"><b>SZEMÉLYES ADATVÉDELMI NYILATKOZAT</b>\n\nA Hendroid egy ingyenes és nyílt forráskódú szoftver, amelyet a Hendroid Közösség tart fenn (csatlakozz hozzánk a Discordon - lásd a fenti linket).</string>
-    <string name="personalDataStatement2">Az alkalmazás nem gyűjt személyes adatokat, de külső webhelyek gyűjthetnek.</string>
+<string name="about1"><b>A Hendroid</b> az egy Doujinshi &amp; Hentai Manga archiváló alkalmazás. A Hentoid alkalmazást eredetileg <b>Cesar Arasaki</b> készítette.</string>
+    <string name="personalDataStatement1"><b>SZEMÉLYES ADATVÉDELMI NYILATKOZAT</b>\n\nA Hentoid egy ingyenes és nyílt forráskódú szoftver, amelyet a Hentoid Közösség tart fenn (csatlakozz hozzánk a Discordon - lásd a fenti linket).</string>
+    <string name="personalDataStatement2">A Hentoid a következő személyes adatokat gyűjti és küldi a Google-nak feldolgozásra a firebase könyvtáron keresztül:\ - Munkamenet azonosító\n - IP cím</string>
     <string name="about_licenses">Licencek megjelenítése</string>
     <string name="about_app_version" tools:ignore="MissingTranslation">Hendroid v<x:g example="1.15.20" id="ver_name">%1$s</x:g> (<x:g example="130" id="ver_code">%2$d</x:g>)</string>
     <string name="about_chrome_version" tools:ignore="MissingTranslation">Chrome v<x:g example="98" id="chrome_ver">%1$d</x:g></string>
@@ -527,6 +544,7 @@
     <string name="web_forward">Előre</string>
     <string name="web_bookmarks">Könyvjelzők</string>
     <string name="web_refresh_stop">Frissítés/Állj</string>
+    <string name="web_copy_url">A jelenlegi URL vágólapra másolása</string>
     <string name="web_download">Letöltés</string>
     <string name="web_unparsable">Ez a tartalom nem tölthető le. Sajnálom~</string>
     <string name="web_url_clipboard">Az URL a vágólapra másolva</string>

@@ -1,0 +1,14 @@
+Changed
+
+    Browser : The quick download long tap default threshold is now 1s instead of 500ms
+
+Fixed
+
+    Hitomi : Prevent the dreaded white screen from appearing
+    Tsumino : Fix certain undownloadable books
+    Luscious : Align with the new ad blocker popup code to prevent it from showing
+    Import : Don't import folders with non-book JSONs as external books
+    Reader : Don't automatically mark read books as completed when the setting is set to "disabled"
+    Reader : auto-rotate setting is now applied to GIF, APNG and WEBP pictures as well
+    Notifications are displayed in english when locale is forced to english
+    A few crashes here and there

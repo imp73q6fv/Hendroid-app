@@ -2,6 +2,8 @@
 *.apk
 *.ap_
 app/**/output.json
+app/**/output-metadata.json
+app/build_*.gradle
 
 # Gradle files
 .gradle/

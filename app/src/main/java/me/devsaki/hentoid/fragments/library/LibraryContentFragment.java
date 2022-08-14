@@ -54,7 +54,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-//import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
@@ -83,11 +82,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
-import me.devsaki.hentoid.BuildConfig;
 import me.devsaki.hentoid.R;
 import me.devsaki.hentoid.activities.LibraryActivity;
 import me.devsaki.hentoid.activities.QueueActivity;
@@ -100,7 +95,7 @@ import me.devsaki.hentoid.database.domains.Group;
 import me.devsaki.hentoid.enums.Grouping;
 import me.devsaki.hentoid.enums.Site;
 import me.devsaki.hentoid.enums.StatusContent;
-import me.devsaki.hentoid.events.AppUpdatedEvent;
+
 import me.devsaki.hentoid.events.CommunicationEvent;
 import me.devsaki.hentoid.events.ProcessEvent;
 import me.devsaki.hentoid.fragments.ProgressDialogFragment;
@@ -108,7 +103,7 @@ import me.devsaki.hentoid.fragments.RatingDialogFragment;
 import me.devsaki.hentoid.ui.InputDialog;
 import me.devsaki.hentoid.util.ContentHelper;
 import me.devsaki.hentoid.util.Debouncer;
-import me.devsaki.hentoid.util.FileHelper;
+import me.devsaki.hentoid.util.file.FileHelper;
 import me.devsaki.hentoid.util.Helper;
 import me.devsaki.hentoid.util.Preferences;
 import me.devsaki.hentoid.util.SearchHelper;
@@ -863,15 +858,6 @@ public class LibraryContentFragment extends Fragment implements
         // Mark last position in the list to be the one it will come back to
         topItemPosition = savedInstanceState.getInt(KEY_LAST_LIST_POSITION, 0);
     }
-
-    /*
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onAppUpdated(AppUpdatedEvent event) {
-        EventBus.getDefault().removeStickyEvent(event);
-        // Display the "update success" dialog when an update is detected on a release version
-        if (!BuildConfig.DEBUG) UpdateSuccessDialogFragment.invoke(getParentFragmentManager());
-    }
-     */
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onActivityEvent(CommunicationEvent event) {

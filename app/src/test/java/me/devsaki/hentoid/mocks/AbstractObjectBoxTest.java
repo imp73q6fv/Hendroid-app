@@ -1,9 +1,6 @@
 package me.devsaki.hentoid.mocks;
 
 import androidx.annotation.NonNull;
-import androidx.test.core.app.ApplicationProvider;
-
-//import com.google.firebase.FirebaseApp;
 
 import net.lachlanmckee.timberjunit.TimberTestRule;
 

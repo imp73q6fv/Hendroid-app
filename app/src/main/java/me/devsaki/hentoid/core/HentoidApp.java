@@ -17,7 +17,6 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-//import com.google.android.gms.security.ProviderInstaller;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import org.threeten.bp.Instant;
@@ -101,10 +100,6 @@ public class HentoidApp extends Application {
 
         // Init datetime
         AndroidThreeTen.init(this);
-
-        // Timber
-        //if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
-        //Timber.plant(new CrashlyticsTree());
 
         // Prefs
         Preferences.init(this);

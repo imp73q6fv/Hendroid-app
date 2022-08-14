@@ -534,7 +534,7 @@
     <string name="pin_new_confirm">새 PIN 확인</string>
     <string name="pin_explanation">앱 잠금은 시작할 때 4자리 PIN을 요구하여 이 앱의 무단 사용을 방지합니다.</string>
     <string name="pin_lock_on_restore">백그라운드 화면에서\n돌아올 때 잠금</string>
-<string name="about1"><b>Hendroid</b>는 동인지\n&amp; H-망가 보관 앱입니다. Hendroid는 <b>Cesar Arasaki</b>에 의해 처음으로 만들어졌습니다.</string>
+<string name="about1"><b>Hendroid</b>는 동인지\n&amp; H-망가 보관 앱입니다. Hentoid는 <b>Cesar Arasaki</b>에 의해 처음으로 만들어졌습니다.</string>
     <string name="personalDataStatement1"><b>개인 데이터 개인 정보 보호 정책</b>\n\nHendroid는 Hendroid 커뮤니티에서 관리하는 무료 오픈 소스 소프트웨어입니다.</string>
     <string name="personalDataStatement2">앱에서는 개인 데이터를 수집하지 않지만 외부 사이트에서 수집할 수 있습니다.</string>
     <string name="about_licenses">라이센스 표시</string>
@@ -747,7 +747,7 @@
     <string name="title_startup_progress">시작 중...</string>
     <string name="title_startup_complete">시작 완료</string>
 <string name="missing_web_view_title">WebView가 설치되지 않았거나 비활성화 되었습니다</string>
-    <string name="missing_web_view">Hentoid가 안드로이드에 내장된 앱 용 웹 뷰어를 찾지 못했습니다.\n현재 브라우저 탐색이나 작품을 다운로드 하는 등 인터넷을 사용한 작업이 불가능합니다.\n\n<b>설정</b> &gt; <b>애플리케이션</b> &gt; <b>사용 안 함</b> 에서 <b>Android 시스템 WebView</b>를 활성화하세요.\n\n앱이 존재하지 않는다면 기기의 <b><a href="https://play.google.com/store/apps/details?id=com.google.android.webview">앱 스토어</a></b>에서 설치하세요.</string>
+    <string name="missing_web_view">Hendroid 안드로이드에 내장된 앱 용 웹 뷰어를 찾지 못했습니다.\n현재 브라우저 탐색이나 작품을 다운로드 하는 등 인터넷을 사용한 작업이 불가능합니다.\n\n<b>설정</b> &gt; <b>애플리케이션</b> &gt; <b>사용 안 함</b> 에서 <b>Android 시스템 WebView</b>를 활성화하세요.\n\n앱이 존재하지 않는다면 기기의 <b><a href="https://play.google.com/store/apps/details?id=com.google.android.webview">앱 스토어</a></b>에서 설치하세요.</string>
     <string name="missing_web_view_library">라이브러리로 돌아가기</string>
 <string name="group_today">오늘</string>
     <string name="group_7">지난 7일</string>

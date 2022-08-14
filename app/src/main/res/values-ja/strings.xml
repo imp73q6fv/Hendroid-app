@@ -533,7 +533,7 @@
     <string name="pin_new_confirm">新しいPINを確認する</string>
     <string name="pin_explanation">App Lockは、起動時に4桁のPINを要求することで、このアプリの不正使用を防ぎます</string>
     <string name="pin_lock_on_restore">復元時にロック\nバックグラウンドから</string>
-<string name="about1"><b>Hendroid</b>は同人誌＆amp; H-マンガアーカイブアプリ。 Hendroidは、もともと<b>Cesar Arasaki</b>によって作成されました。</string>
+<string name="about1"><b>Hendroid</b>は同人誌＆amp; H-マンガアーカイブアプリ。 Hentoidは、もともと<b>Cesar Arasaki</b>によって作成されました。</string>
     <string name="personalDataStatement1"><b>個人情報保護方針</b>\n\nHendroidは、Hendroidコミュニティによって管理されている、フリーでオープンソースのソフトウェアです。</string>
     <string name="personalDataStatement2">アプリが個人情報を収集することはありませんが、外部サイトが個人情報を収集することがあります。</string>
     <string name="about_licenses">ディスプレイライセンス</string>

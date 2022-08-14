@@ -36,7 +36,7 @@ import me.devsaki.hentoid.retrofit.sources.EHentaiServer
 import me.devsaki.hentoid.retrofit.sources.LusciousServer
 import me.devsaki.hentoid.retrofit.sources.PixivServer
 //import me.devsaki.hentoid.services.UpdateCheckService
-import me.devsaki.hentoid.util.FileHelper
+import me.devsaki.hentoid.util.file.FileHelper
 import me.devsaki.hentoid.util.Preferences
 import me.devsaki.hentoid.util.ThemeHelper
 import me.devsaki.hentoid.util.ToastHelper
@@ -211,18 +211,6 @@ class PreferencesFragment : PreferenceFragmentCompat(),
             replace(android.R.id.content, preferenceFragment)
             addToBackStack(null) // This triggers a memory leak in LeakCanary but is _not_ a leak : see https://stackoverflow.com/questions/27913009/memory-leak-in-fragmentmanager
         }
-    }
-
-    /*
-    private fun onCheckUpdatePrefClick() {
-        if (!UpdateDownloadWorker.isRunning(requireContext())) {
-            val intent = UpdateCheckService.makeIntent(requireContext(), true)
-            requireContext().startService(intent)
-        }
-    }*/
-
-    private fun onPrefRequiringRestartChanged() {
-        ToastHelper.toast(R.string.restart_needed)
     }
 
     private fun onHentoidFolderChanged() {

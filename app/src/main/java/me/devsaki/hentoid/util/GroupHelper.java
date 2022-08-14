@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.annimon.stream.Stream;
-//import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +21,7 @@ import me.devsaki.hentoid.database.domains.GroupItem;
 import me.devsaki.hentoid.database.domains.ImageFile;
 import me.devsaki.hentoid.enums.Grouping;
 import me.devsaki.hentoid.json.JsonContentCollection;
+import me.devsaki.hentoid.util.file.FileHelper;
 import timber.log.Timber;
 
 /**

@@ -5,16 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbManager;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-
-//import com.google.firebase.analytics.FirebaseAnalytics;
-//import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -43,12 +39,11 @@ import me.devsaki.hentoid.notification.action.UserActionNotificationChannel;
 import me.devsaki.hentoid.notification.delete.DeleteNotificationChannel;
 import me.devsaki.hentoid.notification.download.DownloadNotificationChannel;
 import me.devsaki.hentoid.notification.startup.StartupNotificationChannel;
-//import me.devsaki.hentoid.services.UpdateCheckService;
 import me.devsaki.hentoid.receiver.PlugEventsReceiver;
-import me.devsaki.hentoid.util.FileHelper;
 import me.devsaki.hentoid.util.Helper;
 import me.devsaki.hentoid.util.JsonHelper;
 import me.devsaki.hentoid.util.Preferences;
+import me.devsaki.hentoid.util.file.FileHelper;
 import me.devsaki.hentoid.workers.StartupWorker;
 import timber.log.Timber;
 
@@ -135,7 +130,7 @@ public class AppStartup {
 
     public static List<Observable<Float>> getPostLaunchTasks(@NonNull final Context context) {
         List<Observable<Float>> result = new ArrayList<>();
-//        result.add(createObservableFrom(context, AppStartupDev::testImg));
+	//        result.add(createObservableFrom(context, AppStartupDev::testImg));
         //result.add(createObservableFrom(context, AppStartup::sendFirebaseStats));
         result.add(createObservableFrom(context, AppStartup::clearPictureCache));
         result.add(createObservableFrom(context, AppStartup::createBookmarksJson));

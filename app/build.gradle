@@ -2,9 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'org.sonarqube'
-//apply plugin: 'com.google.firebase.crashlytics'
-//apply plugin: 'com.google.gms.google-services'
-//apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 // apply signing configuration if config file exists
@@ -34,8 +31,8 @@ android {
         applicationId "org.nonononoki.hendroid"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 200
-        versionName '1.16.7'
+        versionCode 201
+        versionName '1.16.8'
 
         def includeObjectBoxBrowser = System.getenv("INCLUDE_OBJECTBOX_BROWSER") ?: "false"
         def includeLeakCanary = System.getenv("INCLUDE_LEAK_CANARY") ?: "false"
@@ -294,18 +291,6 @@ dependencies {
 
     // Sentence similarity detection
     implementation 'info.debatty:java-string-similarity:2.0.0'
-
-
-    /**
-     * ANALYTICS
-     */
-    // Import the BoM for the Firebase platform
-    //implementation platform('com.google.firebase:firebase-bom:27.1.0')
-
-    // Crashlytics
-    //implementation 'com.google.firebase:firebase-crashlytics'
-    //implementation 'com.google.firebase:firebase-analytics'
-
 
     implementation project(path: ':app:customssiv')
 }

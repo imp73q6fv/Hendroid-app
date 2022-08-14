@@ -531,7 +531,7 @@
     <string name="pin_explanation">Il blocco app impedisce l\'uso non autorizzato di questa app richiedendo un PIN di 4 cifre all\'avvio</string>
     <string name="pin_lock_on_restore">Blocca quando aperto \ndallo schermo principale</string>
 <string name="about1"><b>Hendroid</b> è un\'app per archiviare Doujinshi e H-manga. Hendroid è stato originariamente creato da <b>Cesar Arasaki</b>.</string>
-    <string name="personalDataStatement1"><b>PERSONAL DATA PRIVACY STATEMENT</b>\n\nHendroid is a free and open-source software maintained by the Hendroid Community</string>
+    <string name="personalDataStatement1"><b>DICHIARAZIONE SULLA PRIVACY DEI DATI PERSONALI</b>\n\nHendroid è un software libero e open-source gestito dalla comunità Hendroid.</string>
     <string name="personalDataStatement2">L\'applicazione non raccoglie dati personali, ma può essere raccolta da siti esterni.</string>
     <string name="about_licenses">Visualizza licenze</string>
     <string name="about_app_version" tools:ignore="MissingTranslation">Hendroid v<x:g example="1.15.20" id="ver_name">%1$s</x:g> (<x:g example="130" id="ver_code">%2$d</x:g>)</string>
@@ -742,7 +742,7 @@
     <string name="title_startup_progress">Avviando…</string>
     <string name="title_startup_complete">Avvio completato</string>
 <string name="missing_web_view_title">WebView non installata o disabilitata</string>
-    <string name="missing_web_view">Hentoid non è riuscito a trovare il WebView per le app integrato in Android. \nSenza non potrai navigare tra le fonti, riscaricare libri; non puoi fare molto che richieda internet. \n\nÈ molto probabile che sia scaricato, ma disabilitato: perfavore vai in <b>Impostazioni</b> &gt; <b>Apps</b> &gt; <b>Applicazioni disabilitate</b> e attiva <b>Android System WebView</b>.\n\nSe non riesci a trovare l\'app, perfavore installala <b><a href="https://play.google.com/store/apps/details?id=com.google.android.webview">App Store</a></b>.</string>
+    <string name="missing_web_view">Hendroid non è riuscito a trovare il WebView per le app integrato in Android. \nSenza non potrai navigare tra le fonti, riscaricare libri; non puoi fare molto che richieda internet. \n\nÈ molto probabile che sia scaricato, ma disabilitato: perfavore vai in <b>Impostazioni</b> &gt; <b>Apps</b> &gt; <b>Applicazioni disabilitate</b> e attiva <b>Android System WebView</b>.\n\nSe non riesci a trovare l\'app, perfavore installala <b><a href="https://play.google.com/store/apps/details?id=com.google.android.webview">App Store</a></b>.</string>
     <string name="missing_web_view_library">Torna alla libreria</string>
 <string name="group_today">Oggi</string>
     <string name="group_7">Ultimi 7 giorni</string>

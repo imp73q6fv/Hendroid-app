@@ -3,9 +3,9 @@
 <string name="tools_title">도구</string>
 <string name="tools_screen_import_export">불러오기 / 내보내기</string>
 <string name="tools_export_library_title">메타데이터 내보내기</string>
-<string name="tools_export_library_summary">Hentoid 작품을 JSON 파일로 내보냅니다</string>
+<string name="tools_export_library_summary">Hendroid 작품을 JSON 파일로 내보냅니다</string>
 <string name="tools_import_library_title">메타데이터 불러오기</string>
-<string name="tools_import_library_summary">내보낸 Hentoid 작품을 JSON 파일에서 복구합니다</string>
+<string name="tools_import_library_summary">내보낸 Hendroid 작품을 JSON 파일에서 복구합니다</string>
 <string name="tools_screen_cat_settings">설정</string>
 <string name="tools_export_settings_title">설정 내보내기</string>
 <string name="tools_export_settings_summary">설정을 JSON 파일로 내보냅니다</string>
