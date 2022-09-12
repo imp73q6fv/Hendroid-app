@@ -24,15 +24,15 @@ import me.devsaki.hentoid.database.ObjectBoxDAO;
 import me.devsaki.hentoid.database.domains.Content;
 import me.devsaki.hentoid.enums.Site;
 import me.devsaki.hentoid.events.ProcessEvent;
-import me.devsaki.hentoid.fragments.tools.ImportDownloadsDialogFragment;
+import me.devsaki.hentoid.fragments.tools.DownloadsImportDialogFragment;
 import me.devsaki.hentoid.notification.import_.ImportCompleteNotification;
 import me.devsaki.hentoid.notification.import_.ImportProgressNotification;
 import me.devsaki.hentoid.notification.import_.ImportStartNotification;
 import me.devsaki.hentoid.util.ContentHelper;
-import me.devsaki.hentoid.util.file.FileHelper;
 import me.devsaki.hentoid.util.Preferences;
 import me.devsaki.hentoid.util.StringHelper;
 import me.devsaki.hentoid.util.download.ContentQueueManager;
+import me.devsaki.hentoid.util.file.FileHelper;
 import me.devsaki.hentoid.util.network.CloudflareHelper;
 import me.devsaki.hentoid.util.notification.Notification;
 import me.devsaki.hentoid.workers.data.DownloadsImportData;
@@ -92,7 +92,8 @@ public class DownloadsImportWorker extends BaseWorker {
         startImport(
                 getApplicationContext(),
                 data.getFileUri(),
-                data.getQueuePosition()
+                data.getQueuePosition(),
+                data.getImportAsStreamed()
         );
     }
 
@@ -102,14 +103,15 @@ public class DownloadsImportWorker extends BaseWorker {
     private void startImport(
             @NonNull final Context context,
             @NonNull final String fileUri,
-            final int queuePosition
+            final int queuePosition,
+            boolean importAsStreamed
     ) {
         DocumentFile file = FileHelper.getFileFromSingleUriString(context, fileUri);
         if (null == file) {
             trace(Log.ERROR, "Couldn't find downloads file at %s", fileUri);
             return;
         }
-        List<String> downloads = ImportDownloadsDialogFragment.Companion.readFile(context, file);
+        List<String> downloads = DownloadsImportDialogFragment.Companion.readFile(context, file);
         if (downloads.isEmpty()) {
             trace(Log.ERROR, "Downloads file %s is empty", fileUri);
             return;
@@ -123,7 +125,7 @@ public class DownloadsImportWorker extends BaseWorker {
                 String galleryUrl = s;
                 if (StringHelper.isNumeric(galleryUrl))
                     galleryUrl = Content.getGalleryUrlFromId(Site.NHENTAI, galleryUrl);
-                importGallery(galleryUrl, queuePosition, false);
+                importGallery(galleryUrl, queuePosition, importAsStreamed, false);
             }
         } catch (InterruptedException ie) {
             Timber.e(ie);
@@ -136,7 +138,7 @@ public class DownloadsImportWorker extends BaseWorker {
         notifyProcessEnd();
     }
 
-    private void importGallery(@NonNull String url, final int queuePosition, boolean hasPassedCf) throws InterruptedException {
+    private void importGallery(@NonNull String url, final int queuePosition, boolean importAsStreamed, boolean hasPassedCf) throws InterruptedException {
         Site site = Site.searchByUrl(url);
         if (null == site || Site.NONE == site) {
             trace(Log.WARN, "ERROR : Unsupported source @ %s", url);
@@ -159,8 +161,10 @@ public class DownloadsImportWorker extends BaseWorker {
                 nextKO(getApplicationContext(), null);
             } else {
                 trace(Log.INFO, "Added content @ %s", url);
+                Content c = content.get();
+                c.setDownloadMode(importAsStreamed ? Content.DownloadMode.STREAM : Content.DownloadMode.DOWNLOAD);
                 dao.addContentToQueue(
-                        content.get(),
+                        c,
                         null,
                         queuePosition,
                         -1,
@@ -180,7 +184,7 @@ public class DownloadsImportWorker extends BaseWorker {
             trace(Log.INFO, "Trying to bypass Cloudflare for content @ %s", url);
             if (null == cfHelper) cfHelper = new CloudflareHelper();
             if (cfHelper.tryPassCloudflare(site, null)) {
-                importGallery(url, queuePosition, true);
+                importGallery(url, queuePosition, importAsStreamed, true);
             } else {
                 trace(Log.WARN, "Cloudflare bypass failed for content @ %s", url);
                 nextKO(getApplicationContext(), null);

@@ -29,25 +29,25 @@ public class HitomiActivity extends BaseWebActivity {
     private static final String[] JS_URL_PATTERN_WHITELIST = {"//hitomi.la[/]{0,1}$", "galleries/[\\w%\\-]+.js$", "//hitomi.la/[?]page=[0-9]+"};
     private static final String[] JS_URL_WHITELIST = {"nozomiurlindex", "languagesindex", "tagindex", "filesaver", "common", "date", "download", "gallery", "jquery", "cookie", "jszip", "limitlists", "moment-with-locales", "moveimage", "pagination", "search", "searchlib", "yall", "reader", "decode_webp", "bootstrap", "gg.js", "paging", "language_support"};
     private static final String[] JS_CONTENT_BLACKLIST = {"exoloader", "popunder", "da_etirw"};
-    private static final String[] REMOVABLE_ELEMENTS = {".content div[class^=hitomi-]", ".container div[class^=hitomi-]", ".top-content > div:not(.list-title)"};
+    private static final String[] REMOVABLE_ELEMENTS = {".content div[class^=hitomi-]", ".container div[class^=hitomi-]", ".top-content > div:not(.list-title)", ".wnvtqvsW"};
 
     Site getStartSite() {
         return Site.HITOMI;
     }
 
     @Override
-    protected CustomWebViewClient getWebClient() {
+    protected CustomWebViewClient createWebClient() {
         HitomiWebClient client = new HitomiWebClient(getStartSite(), GALLERY_FILTER, this);
         client.restrictTo(DOMAIN_FILTER);
         //client.addHideableElements(HIDEABLE_ELEMENTS);
         client.addRemovableElements(REMOVABLE_ELEMENTS);
+        client.addJavascriptBlacklist(JS_CONTENT_BLACKLIST);
         client.setResultsUrlPatterns(RESULTS_FILTER);
         client.setResultUrlRewriter(this::rewriteResultsUrl);
         client.adBlocker.addToUrlBlacklist(BLOCKED_CONTENT);
         client.adBlocker.addToJsUrlWhitelist(JS_URL_WHITELIST);
         for (String s : JS_URL_PATTERN_WHITELIST) client.adBlocker.addJsUrlPatternWhitelist(s);
         for (String s : JS_CONTENT_BLACKLIST) client.adBlocker.addJsContentBlacklist(s);
-        for (String s : JS_CONTENT_BLACKLIST) client.addJavascriptBlacklist(s);
         return client;
     }
 
@@ -78,7 +78,7 @@ public class HitomiActivity extends BaseWebActivity {
         public WebResourceResponse shouldInterceptRequest(@NonNull WebView view, @NonNull WebResourceRequest request) {
             String url = request.getUrl().toString();
 
-            if (isMarkDownloaded() && url.contains("galleryblock")) { // Process book blocks to mark existing ones
+            if ((isMarkDownloaded() || isMarkMerged()) && url.contains("galleryblock")) { // Process book blocks to mark existing ones
                 WebResourceResponse result = parseResponse(url, request.getRequestHeaders(), false, false);
                 if (result != null) return result;
                 else return sendRequest(request);

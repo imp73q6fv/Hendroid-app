@@ -28,11 +28,11 @@ import me.devsaki.hentoid.enums.Site
 import me.devsaki.hentoid.events.ProcessEvent
 import me.devsaki.hentoid.events.ServiceDestroyedEvent
 import me.devsaki.hentoid.notification.import_.ImportNotificationChannel
-import me.devsaki.hentoid.util.file.FileHelper
 import me.devsaki.hentoid.util.ImportHelper
 import me.devsaki.hentoid.util.ImportHelper.PickFileContract
 import me.devsaki.hentoid.util.Preferences
 import me.devsaki.hentoid.util.StringHelper
+import me.devsaki.hentoid.util.file.FileHelper
 import me.devsaki.hentoid.widget.AddQueueMenu
 import me.devsaki.hentoid.workers.DownloadsImportWorker
 import me.devsaki.hentoid.workers.data.DownloadsImportData
@@ -46,7 +46,7 @@ import java.io.InputStreamReader
 /**
  * Dialog for the downloads list import feature
  */
-class ImportDownloadsDialogFragment : DialogFragment() {
+class DownloadsImportDialogFragment : DialogFragment() {
 
     private var _binding: DialogQueueDownloadsImportBinding? = null
     private val binding get() = _binding!!
@@ -197,10 +197,12 @@ class ImportDownloadsDialogFragment : DialogFragment() {
         queuePosition: Int
     ) {
         binding.importRunBtn.visibility = View.GONE
+        binding.importStreamed.isEnabled = false
         isCancelable = false
         val builder = DownloadsImportData.Builder()
         builder.setFileUri(fileUri)
         builder.setQueuePosition(queuePosition)
+        builder.setImportAsStreamed(binding.importStreamed.isChecked)
         ImportNotificationChannel.init(requireContext())
         binding.importProgressText.setText(R.string.starting_import)
         binding.importProgressBar.isIndeterminate = true
@@ -268,7 +270,7 @@ class ImportDownloadsDialogFragment : DialogFragment() {
 
     companion object {
         fun invoke(fragmentManager: FragmentManager) {
-            val fragment = ImportDownloadsDialogFragment()
+            val fragment = DownloadsImportDialogFragment()
             fragment.show(fragmentManager, null)
         }
 

@@ -1,9 +1,7 @@
 package me.devsaki.hentoid.activities.sources;
 
-import static me.devsaki.hentoid.util.file.PermissionHelper.RQST_STORAGE_PERMISSION;
 import static me.devsaki.hentoid.util.Preferences.Constant.QUEUE_NEW_DOWNLOADS_POSITION_ASK;
-import static me.devsaki.hentoid.util.Preferences.Constant.QUEUE_NEW_DOWNLOADS_POSITION_BOTTOM;
-import static me.devsaki.hentoid.util.Preferences.Constant.QUEUE_NEW_DOWNLOADS_POSITION_TOP;
+import static me.devsaki.hentoid.util.file.PermissionHelper.RQST_STORAGE_PERMISSION;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -104,14 +102,14 @@ import me.devsaki.hentoid.ui.BlinkAnimation;
 import me.devsaki.hentoid.ui.InputDialog;
 import me.devsaki.hentoid.util.ContentHelper;
 import me.devsaki.hentoid.util.DuplicateHelper;
-import me.devsaki.hentoid.util.file.FileHelper;
 import me.devsaki.hentoid.util.Helper;
-import me.devsaki.hentoid.util.file.PermissionHelper;
 import me.devsaki.hentoid.util.Preferences;
 import me.devsaki.hentoid.util.StringHelper;
 import me.devsaki.hentoid.util.ToastHelper;
 import me.devsaki.hentoid.util.TooltipHelper;
 import me.devsaki.hentoid.util.download.ContentQueueManager;
+import me.devsaki.hentoid.util.file.FileHelper;
+import me.devsaki.hentoid.util.file.PermissionHelper;
 import me.devsaki.hentoid.util.network.HttpHelper;
 import me.devsaki.hentoid.util.network.WebkitPackageHelper;
 import me.devsaki.hentoid.views.NestedScrollWebView;
@@ -208,6 +206,8 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
     private List<ImageFile> extraImages = Collections.emptyList();
     // List of URLs of downloaded books for the current site
     private final List<String> downloadedBooksUrls = new ArrayList<>();
+    // List of URLs of merged books for the current site
+    private final List<String> mergedBooksUrls = new ArrayList<>();
 
     // === OTHER VARIABLES
     // Indicates which mode the download button is in
@@ -224,7 +224,7 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
     protected String customCss = null;
 
 
-    protected abstract CustomWebViewClient getWebClient();
+    protected abstract CustomWebViewClient createWebClient();
 
     abstract Site getStartSite();
 
@@ -246,6 +246,7 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
         Preferences.registerPrefsChangedListener(listener);
 
         if (Preferences.isBrowserMarkDownloaded()) updateDownloadedBooksUrls();
+        if (Preferences.isBrowserMarkMerged()) updateMergedBooksUrls();
 
         if (getStartSite() == null) {
             Timber.w("Site is null!");
@@ -421,7 +422,7 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
         checkPermissions();
         String url = webView.getUrl();
         Timber.i(">> WebActivity resume : %s %s %s", url, currentContent != null, (currentContent != null) ? currentContent.getTitle() : "");
-        if (currentContent != null && url != null && getWebClient().isGalleryPage(url)) {
+        if (currentContent != null && url != null && createWebClient().isGalleryPage(url)) {
             if (processContentDisposable != null)
                 processContentDisposable.dispose(); // Cancel whichever process was happening before
             processContentDisposable = Single.fromCallable(() -> processContent(currentContent, false))
@@ -526,7 +527,7 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
         if (BuildConfig.DEBUG) WebView.setWebContentsDebuggingEnabled(true);
 
 
-        webClient = getWebClient();
+        webClient = createWebClient();
         webView.setWebViewClient(webClient);
 
         // Download immediately on long click on a link / image link
@@ -919,10 +920,11 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
     /**
      * Add current content (i.e. content of the currently viewed book) to the download queue
      *
-     * @param quickDownload True if the action has been triggered by a quick download
-     *                      (which means we're not on a book gallery page but on the book list page)
+     * @param quickDownload      True if the action has been triggered by a quick download
+     *                           (which means we're not on a book gallery page but on the book list page)
+     * @param isDownloadPlus     True if the action has been triggered by a "download extra pages" action
+     * @param isReplaceDuplicate True if the action has been triggered by a "download and replace existing duplicate book" action
      */
-    // TODO update doc
     void processDownload(boolean quickDownload, boolean isDownloadPlus, boolean isReplaceDuplicate) {
         if (null == currentContent) return;
 
@@ -1015,7 +1017,7 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
                     webView,
                     this,
                     (position, item) -> addToQueue(
-                            (0 == position) ? QUEUE_NEW_DOWNLOADS_POSITION_TOP : QUEUE_NEW_DOWNLOADS_POSITION_BOTTOM,
+                            (0 == position) ? ContentHelper.QueuePosition.TOP : ContentHelper.QueuePosition.BOTTOM,
                             Preferences.getBrowserDlAction(),
                             isReplaceDuplicate
                     )
@@ -1024,8 +1026,14 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
             addToQueue(Preferences.getQueueNewDownloadPosition(), Preferences.getBrowserDlAction(), isReplaceDuplicate);
     }
 
-    // TODO doc
-    private void addToQueue(int position, int downloadMode, boolean isReplaceDuplicate) {
+    /**
+     * Add current content to the downloads queue
+     *
+     * @param position           Target position in the queue (top or bottom)
+     * @param downloadMode       Download mode for this content
+     * @param isReplaceDuplicate True if existing duplicate book has to be replaced upon download completion
+     */
+    private void addToQueue(@ContentHelper.QueuePosition int position, @Content.DownloadMode int downloadMode, boolean isReplaceDuplicate) {
         if (null == currentContent) return;
         Point coords = Helper.getCenter(binding.quickDlFeedback);
         if (coords != null && View.VISIBLE == binding.quickDlFeedback.getVisibility()) {
@@ -1108,7 +1116,7 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
         currentContent = null;
 
         Timber.i("Content Site, URL : %s, %s", onlineContent.getSite().getCode(), onlineContent.getUrl());
-        String searchUrl = ""; //getStartSite().hasCoverBasedPageUpdates() ? content.getCoverImageUrl() : "";
+        String searchUrl = getStartSite().hasCoverBasedPageUpdates() ? onlineContent.getCoverImageUrl() : "";
         Content contentDB = dao.selectContentBySourceAndUrl(onlineContent.getSite(), onlineContent.getUrl(), searchUrl);
 
         boolean isInCollection = (contentDB != null && ContentHelper.isInLibrary(contentDB.getStatus()));
@@ -1339,6 +1347,20 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
         }
     }
 
+    private void updateMergedBooksUrls() {
+        synchronized (mergedBooksUrls) {
+            mergedBooksUrls.clear();
+            mergedBooksUrls.addAll(
+                    Stream.of(dao.selectAllMergedUrls(getStartSite()))
+                            .map(s -> s.replace(getStartSite().getUrl(), ""))
+                            .map(s -> s.replaceAll("\\b|/galleries|/gallery|/g|/entry\\b", "")) //each sites "gallery" path
+                            .map(s -> s.replaceAll("\\p{Punct}", "."))
+                            .map(s -> s.endsWith(".") && s.length() > 1 ? s.substring(0, s.length() - 1) : s)
+                            .toList()
+            );
+        }
+    }
+
     /**
      * Listener for the events of the download engine
      * Used to switch the action button to Read when the download of the currently viewed is completed
@@ -1426,6 +1448,11 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
         return new ArrayList<>(downloadedBooksUrls); // Work on a copy to avoid any thread-synch issue
     }
 
+    @Override
+    public List<String> getAllMergedBooksUrls() {
+        return new ArrayList<>(mergedBooksUrls);
+    }
+
     /**
      * Listener for preference changes (from the settings dialog)
      *
@@ -1441,6 +1468,11 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
             customCss = null;
             webClient.setMarkDownloaded(Preferences.isBrowserMarkDownloaded());
             if (webClient.isMarkDownloaded()) updateDownloadedBooksUrls();
+            reload = true;
+        } else if (Preferences.Key.BROWSER_MARK_MERGED.equals(key)) {
+            customCss = null;
+            webClient.setMarkMerged(Preferences.isBrowserMarkMerged());
+            if (webClient.isMarkMerged()) updateMergedBooksUrls();
             reload = true;
         } else if (Preferences.Key.BROWSER_NHENTAI_INVISIBLE_BLACKLIST.equals(key)) {
             customCss = null;
@@ -1469,7 +1501,7 @@ public abstract class BaseWebActivity extends BaseActivity implements CustomWebV
     public String getCustomCss() {
         if (null == customCss) {
             StringBuilder sb = new StringBuilder();
-            if (Preferences.isBrowserMarkDownloaded())
+            if (Preferences.isBrowserMarkDownloaded() || Preferences.isBrowserMarkMerged())
                 FileHelper.getAssetAsString(getAssets(), "downloaded.css", sb);
             if (getStartSite().equals(Site.NHENTAI) && Preferences.isBrowserNhentaiInvisibleBlacklist())
                 FileHelper.getAssetAsString(getAssets(), "nhentai_invisible_blacklist.css", sb);

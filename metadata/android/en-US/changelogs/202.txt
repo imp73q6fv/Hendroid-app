@@ -1,0 +1,21 @@
+New
+
+    Browser : New setting to display a mark on merged books while browsing
+    Queue : Imported downloads can now be imported as streamed books
+
+Changed
+
+    Browser : The quick download long tap default threshold is now 1.5s instead of 1s
+
+Fixed
+
+    Toonily : Download button is now enabled on books with "exotic" characters in their title
+    Hitomi : A couple ads removed
+    Pururin : The mark now appears at the correct place when the "mark downloaded books" setting is on
+    Browser : Properly recognize existing books on sites with changing URLs
+    Import : Auto-fix certain books with misnumbered, duplicate or chapterless pages (needs a new import for the fix to work)
+    Queue : Imported downloads now properly detect duplicates for E-Hentai, ExHentai and Luscious
+    Library : Books that get splitted after being merged now keep their URL intact
+    Reader : Prevent slideshow to slide back to page 1 when changing device orientation
+    Reader : Page doesn't turn anymore after being favourited
+    General : Dropdown controls now close themselves when tapping outside
