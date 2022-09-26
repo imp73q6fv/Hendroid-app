@@ -3,7 +3,7 @@ package me.devsaki.hentoid.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import io.objectbox.android.ObjectBoxLiveData
+import androidx.lifecycle.MutableLiveData
 import me.devsaki.hentoid.database.domains.Content
 import me.devsaki.hentoid.database.domains.DuplicateEntry
 
@@ -39,6 +39,7 @@ class DuplicatesDAO(ctx: Context) {
     }
 
     fun getEntriesLive(): LiveData<List<DuplicateEntry>> {
+        /*
         val livedata = ObjectBoxLiveData(duplicatesDb.selectEntriesQ())
 
         // Get all contents in one go
@@ -49,6 +50,8 @@ class DuplicatesDAO(ctx: Context) {
         }
 
         return livedata2
+        */
+        return MutableLiveData<List<DuplicateEntry>>() //TODO
     }
 
     private fun enrichWithContent(e: DuplicateEntry): DuplicateEntry {
