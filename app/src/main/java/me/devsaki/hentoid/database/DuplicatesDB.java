@@ -6,7 +6,6 @@ import java.util.List;
 
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
-import io.objectbox.android.AndroidObjectBrowser;
 import io.objectbox.query.Query;
 import me.devsaki.hentoid.BuildConfig;
 import me.devsaki.hentoid.database.domains.DuplicateEntry;
@@ -23,6 +22,7 @@ public class DuplicatesDB {
     private static DuplicatesDB instance;
 
     private final BoxStore store;
+
 
     private DuplicatesDB(Context context) {
         store = MyObjectBox.builder().name(DB_NAME).androidContext(context.getApplicationContext()).maxSizeInKByte(Preferences.getMaxDbSizeKb()).build();
@@ -61,10 +61,7 @@ public class DuplicatesDB {
     }
 
     public Query<DuplicateEntry> selectEntriesQ() {
-        //return store.boxFor(DuplicateEntry.class).query().orderDesc(DuplicateEntry_.referenceSize).build();
-        //TODO
-        return null;
-
+        return store.boxFor(DuplicateEntry.class).query().orderDesc(DuplicateEntry_.referenceSize).build();
     }
 
     void insertEntry(DuplicateEntry entry) {

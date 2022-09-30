@@ -31,8 +31,8 @@ android {
         applicationId "org.nonononoki.hendroid"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 203
-        versionName '1.16.9.1'
+        versionCode 202
+        versionName '1.16.9'
 
         def includeObjectBoxBrowser = System.getenv("INCLUDE_OBJECTBOX_BROWSER") ?: "false"
         def includeLeakCanary = System.getenv("INCLUDE_LEAK_CANARY") ?: "false"
@@ -250,8 +250,8 @@ dependencies {
     // (would result in two conflicting versions, e.g. "Duplicate files copied in APK lib/armeabi-v7a/libobjectbox.so").
     def objectbox_version = "3.2.1"
     if (includeObjectBoxBrowser.toBoolean()) {
-        //debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectbox_version"
-        //releaseImplementation "io.objectbox:objectbox-android:$objectbox_version"
+        debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectbox_version"
+        releaseImplementation "io.objectbox:objectbox-android:$objectbox_version"
     }
 
     // Timber (Extensible Logger): github.com/JakeWharton/timber
@@ -293,10 +293,6 @@ dependencies {
     implementation 'info.debatty:java-string-similarity:2.0.0'
 
     implementation project(path: ':app:customssiv')
-
-    implementation 'org.greenrobot:essentials:3.1.0'
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'com.github.spotbugs:spotbugs-annotations:4.7.2'
 }
 
 sonarqube {
@@ -311,4 +307,4 @@ sonarqube {
     }
 }
 
-// apply plugin: 'io.objectbox' // apply last
+apply plugin: 'io.objectbox' // apply last
