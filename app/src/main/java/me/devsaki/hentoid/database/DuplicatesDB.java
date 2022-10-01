@@ -4,15 +4,9 @@ import android.content.Context;
 
 import java.util.List;
 
-import io.objectbox.BoxStore;
-import io.objectbox.android.AndroidObjectBrowser;
-import io.objectbox.query.Query;
-import me.devsaki.hentoid.BuildConfig;
+import io.realm.Realm;
+import io.realm.RealmQuery;
 import me.devsaki.hentoid.database.domains.DuplicateEntry;
-import me.devsaki.hentoid.database.domains.DuplicateEntry_;
-import me.devsaki.hentoid.database.domains.MyObjectBox;
-import me.devsaki.hentoid.util.Preferences;
-import timber.log.Timber;
 
 public class DuplicatesDB {
 
@@ -21,16 +15,11 @@ public class DuplicatesDB {
 
     private static DuplicatesDB instance;
 
-    private final BoxStore store;
+    private final Realm realm;
 
 
     private DuplicatesDB(Context context) {
-        store = MyObjectBox.builder().name(DB_NAME).androidContext(context.getApplicationContext()).maxSizeInKByte(Preferences.getMaxDbSizeKb()).build();
-
-        if (BuildConfig.DEBUG && BuildConfig.INCLUDE_OBJECTBOX_BROWSER) {
-            boolean started = new AndroidObjectBrowser(store).start(context.getApplicationContext());
-            Timber.i("ObjectBrowser started: %s", started);
-        }
+        realm = Realm.getDefaultInstance();
     }
 
     // Use this to get db instance
@@ -43,40 +32,43 @@ public class DuplicatesDB {
         return instance;
     }
 
-
     void closeThreadResources() {
-        store.closeThreadResources();
+        clearEntries();
     }
 
     long getDbSizeBytes() {
-        return store.sizeOnDisk();
+        return 1;
     }
 
     public void tearDown() {
-        if (store != null) {
-            store.closeThreadResources();
-            store.close();
-            store.deleteAllFiles();
-        }
+        realm.delete(DuplicateEntry.class);
     }
 
-    public Query<DuplicateEntry> selectEntriesQ() {
-        return store.boxFor(DuplicateEntry.class).query().orderDesc(DuplicateEntry_.referenceSize).build();
+    public RealmQuery<DuplicateEntry> selectEntriesQ() {
+        return realm.where(DuplicateEntry.class);
     }
 
     void insertEntry(DuplicateEntry entry) {
-        store.boxFor(DuplicateEntry.class).put(entry);
+        realm.executeTransaction(r -> {
+            r.insertOrUpdate(entry);
+        });
     }
 
     void insertEntries(List<DuplicateEntry> entry) {
-        store.boxFor(DuplicateEntry.class).put(entry);
+        realm.executeTransaction(r -> {
+            r.insertOrUpdate(entry);
+        });
     }
 
     void delete(DuplicateEntry entry) {
-        store.boxFor(DuplicateEntry.class).remove(entry);
+        realm.executeTransaction(r -> {
+            entry.deleteFromRealm();
+        });
     }
 
     void clearEntries() {
-        store.boxFor(DuplicateEntry.class).removeAll();
+        realm.executeTransaction(r -> {
+            realm.delete(DuplicateEntry.class);
+        });
     }
 }
