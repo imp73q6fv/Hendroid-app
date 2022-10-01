@@ -3,7 +3,6 @@ package me.devsaki.hentoid.enums;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.objectbox.converter.PropertyConverter;
 import me.devsaki.hentoid.R;
 import me.devsaki.hentoid.json.core.JsonSiteSettings;
 import me.devsaki.hentoid.util.network.HttpHelper;
@@ -195,9 +194,8 @@ public enum Site {
             bookCardDepth = jsonSite.bookCardDepth;
     }
 
-    public static class SiteConverter implements PropertyConverter<Site, Long> {
-        @Override
-        public Site convertToEntityProperty(Long databaseValue) {
+    public static class SiteConverter {
+        public static Site convertToEntityProperty(Long databaseValue) {
             if (databaseValue == null) {
                 return Site.NONE;
             }
@@ -209,8 +207,7 @@ public enum Site {
             return Site.NONE;
         }
 
-        @Override
-        public Long convertToDatabaseValue(Site entityProperty) {
+        public static Long convertToDatabaseValue(Site entityProperty) {
             return entityProperty == null ? null : (long) entityProperty.getCode();
         }
     }

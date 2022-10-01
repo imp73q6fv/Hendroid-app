@@ -1,30 +1,28 @@
 package me.devsaki.hentoid.database.domains;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.relation.ToOne;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-@Entity
-public class QueueRecord {
+public class QueueRecord extends RealmObject {
 
-    @Id
+    @PrimaryKey
     public long id;
-    private ToOne<Content> content;
+    private Content content;
     private int rank;
 
     public QueueRecord() { // Required by ObjectBox when an alternate constructor exists
     }
 
     public QueueRecord(long id, int order) {
-        content.setTargetId(id);
+        content.setId(id);
         rank = order;
     }
 
-    public ToOne<Content> getContent() {
+    public Content getContent() {
         return content;
     }
 
-    public void setContent(ToOne<Content> content) {
+    public void setContent(Content content) {
         this.content = content;
     }
 

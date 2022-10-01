@@ -7,34 +7,32 @@ import com.annimon.stream.Stream;
 import java.util.List;
 import java.util.Objects;
 
-import io.objectbox.annotation.Backlink;
-import io.objectbox.annotation.Convert;
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Index;
-import io.objectbox.converter.PropertyConverter;
-import io.objectbox.relation.ToMany;
-import io.objectbox.relation.ToOne;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
+import io.realm.annotations.Index;
+import io.realm.annotations.LinkingObjects;
+import io.realm.annotations.PrimaryKey;
 import me.devsaki.hentoid.enums.Grouping;
 import me.devsaki.hentoid.util.Helper;
 
-@Entity
-public class Group {
+public class Group extends RealmObject {
 
-    @Id
+    @PrimaryKey
     public long id;
+
     @Index
-    @Convert(converter = GroupingConverter.class, dbType = Integer.class)
-    public Grouping grouping;
+    public Integer grouping;
     public String name;
-    @Backlink(to = "group")
-    public ToMany<GroupItem> items;
+    @LinkingObjects("group")
+    public RealmResults<GroupItem> items;
     // Targetting the content instead of the picture itself because
     // 1- That's the logic of the UI
     // 2- Pictures within a given Content are sometimes entirely replaced, breaking that link
-    public ToOne<Content> coverContent;
+    public Content coverContent;
     // in Grouping.ARTIST : 0 = Artist; 1 = Group
     // in Grouping.CUSTOM : 0 = Custom; 1 = Ungrouped
+    @LinkingObjects("group")
+    public RealmResults<Attribute> attributes;
     public int subtype;
     public int order;
     public boolean hasCustomBookOrder = false;
@@ -54,7 +52,7 @@ public class Group {
     }
 
     public Group(@NonNull final Grouping grouping, @NonNull final String name, int order) {
-        this.grouping = grouping;
+        this.grouping = GroupingConverter.convertToDatabaseValue(grouping);
         this.name = name;
         this.order = order;
     }
@@ -145,6 +143,14 @@ public class Group {
                 Objects.equals(name, group.name);
     }
 
+    public Grouping getGrouping() {
+        return GroupingConverter.convertToEntityProperty(grouping);
+    }
+
+    public void setGrouping(Grouping grouping) {
+        this.grouping = GroupingConverter.convertToDatabaseValue(grouping);
+    }
+
     @Override
     // Must be an int32, so we're bound to use Objects.hash
     public int hashCode() {
@@ -155,15 +161,13 @@ public class Group {
         return Helper.hash64((grouping + "." + name).getBytes());
     }
 
-    public static class GroupingConverter implements PropertyConverter<Grouping, Integer> {
-        @Override
-        public Grouping convertToEntityProperty(Integer databaseValue) {
+    public static class GroupingConverter {
+        public static Grouping convertToEntityProperty(Integer databaseValue) {
             if (databaseValue == null) return null;
             return Grouping.searchById(databaseValue);
         }
 
-        @Override
-        public Integer convertToDatabaseValue(Grouping entityProperty) {
+        public static Integer convertToDatabaseValue(Grouping entityProperty) {
             return entityProperty == null ? null : entityProperty.getId();
         }
     }

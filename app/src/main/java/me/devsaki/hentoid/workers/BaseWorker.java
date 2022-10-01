@@ -36,7 +36,7 @@ public abstract class BaseWorker extends Worker {
 
     protected NotificationManager notificationManager;
 
-    private final @IdRes
+    private final @PrimaryKeyRes
     int serviceId;
     private boolean isComplete = true;
 
@@ -44,7 +44,7 @@ public abstract class BaseWorker extends Worker {
     private final List<LogHelper.LogEntry> logs;
 
 
-    protected static boolean isRunning(@NonNull Context context, @IdRes int serviceId) {
+    protected static boolean isRunning(@NonNull Context context, @PrimaryKeyRes int serviceId) {
         ListenableFuture<List<WorkInfo>> infos = WorkManager.getInstance(context).getWorkInfosForUniqueWork(Integer.toString(serviceId));
         try {
             Optional<WorkInfo> info = Stream.of(infos.get()).filter(i -> !i.getState().isFinished()).findFirst();
@@ -60,7 +60,7 @@ public abstract class BaseWorker extends Worker {
     protected BaseWorker(
             @NonNull Context context,
             @NonNull WorkerParameters parameters,
-            @IdRes int serviceId,
+            @PrimaryKeyRes int serviceId,
             String logName) {
         super(context, parameters);
         this.serviceId = serviceId;

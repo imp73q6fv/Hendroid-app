@@ -1,5 +1,6 @@
 package me.devsaki.hentoid.database.domains;
 
+import static me.devsaki.hentoid.enums.Site.*;
 import static me.devsaki.hentoid.util.JsonHelper.MAP_STRINGS;
 
 import android.text.TextUtils;
@@ -24,15 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import io.objectbox.annotation.Backlink;
-import io.objectbox.annotation.Convert;
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Index;
-import io.objectbox.annotation.Transient;
-import io.objectbox.converter.PropertyConverter;
-import io.objectbox.relation.ToMany;
-import io.objectbox.relation.ToOne;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.Index;
+import io.realm.annotations.LinkingObjects;
+import io.realm.annotations.PrimaryKey;
 import me.devsaki.hentoid.activities.sources.ASMHentaiActivity;
 import me.devsaki.hentoid.activities.sources.AllPornComicActivity;
 import me.devsaki.hentoid.activities.sources.BaseWebActivity;
@@ -74,8 +72,7 @@ import timber.log.Timber;
  * Content builder
  */
 @SuppressWarnings("UnusedReturnValue")
-@Entity
-public class Content implements Serializable {
+public class Content extends RealmObject implements Serializable {
 
     // == Used with the downloadMode attribute
 
@@ -89,31 +86,33 @@ public class Content implements Serializable {
 
     // == Attributes
 
-    @Id
+    @PrimaryKey
     private long id;
     @Index
     private String url;
     private String uniqueSiteId; // Has to be queryable in DB, hence has to be a field
     private String title;
     private String author;
-    private ToMany<Attribute> attributes;
+    private RealmResults<Attribute> attributes;
     private String coverImageUrl;
     private Integer qtyPages; // Integer is actually unnecessary, but changing this to plain int requires a small DB model migration...
     private long uploadDate;
     private long downloadDate = 0;
     private long downloadCompletionDate = 0;
     @Index
-    @Convert(converter = StatusContent.StatusContentConverter.class, dbType = Integer.class)
-    private StatusContent status;
-    @Backlink(to = "content")
-    private ToMany<ImageFile> imageFiles;
-    @Backlink(to = "content")
-    public ToMany<GroupItem> groupItems;
-    @Backlink(to = "content")
-    private ToMany<Chapter> chapters;
+    private Integer status;
+    @LinkingObjects("content")
+    private RealmResults<ImageFile> imageFiles;
+    @LinkingObjects("content")
+    public RealmResults<GroupItem> groupItems;
+    @LinkingObjects("content")
+    private RealmResults<Chapter> chapters;
     @Index
-    @Convert(converter = Site.SiteConverter.class, dbType = Long.class)
-    private Site site;
+    private Long site;
+    @LinkingObjects("content")
+    public RealmResults<Group> groups;
+    @LinkingObjects("content")
+    public RealmResults<QueueRecord> queueRecords;
     /**
      * @deprecated Replaced by {@link PrimaryImportWorker} methods; class is kept for retrocompatibilty
      */
@@ -127,12 +126,11 @@ public class Content implements Serializable {
     private long lastReadDate;
     private int lastReadPageIndex = 0;
     private boolean manuallyMerged = false;
-    @Convert(converter = Content.StringMapConverter.class, dbType = String.class)
-    private Map<String, String> bookPreferences = new HashMap<>();
+    private String bookPreferences = "";
 
     private @DownloadMode
     int downloadMode;
-    private ToOne<Content> contentToReplace;
+    private Content contentToReplace;
 
     // Aggregated data redundant with the sum of individual data contained in ImageFile
     // ObjectBox can't do the sum in a single Query, so here it is !
@@ -142,8 +140,8 @@ public class Content implements Serializable {
     // Temporary during SAVED state only
     private String downloadParams;
     // Temporary during ERROR state only
-    @Backlink(to = "content")
-    private ToMany<ErrorRecord> errorLog;
+    @LinkingObjects("content")
+    private RealmResults<ErrorRecord> errorLog;
     // Needs to be in the DB to keep the information when deletion takes a long time
     // and user navigates away; no need to save that into JSON
     private boolean isBeingDeleted = false;
@@ -154,34 +152,34 @@ public class Content implements Serializable {
     private boolean isFlaggedForDeletion = false;
 
     // Runtime attributes; no need to expose them for JSON persistence nor to persist them to DB
-    @Transient
+    @Ignore
     private long uniqueHash = 0;    // cached value of uniqueHash
-    @Transient
+    @Ignore
     private long progress;          // number of downloaded pages; used to display the progress bar on the queue screen
-    @Transient
+    @Ignore
     private long downloadedBytes = 0;// Number of downloaded bytes; used to display the size estimate on the queue screen
-    @Transient
+    @Ignore
     private boolean isFirst;        // True if current content is the first of its set in the DB query
-    @Transient
+    @Ignore
     private boolean isLast;         // True if current content is the last of its set in the DB query
-    @Transient
+    @Ignore
     private int numberDownloadRetries = 0;  // Current number of download retries current content has gone through
-    @Transient
+    @Ignore
     private int readPagesCount = -1;  // Read pages count fed by payload; only useful to update list display
-    @Transient
+    @Ignore
     private String archiveLocationUri;  // Only used when importing external archives
-    @Transient
+    @Ignore
     private boolean updatedProperties = false;  // Only used when using ImageListParsers to indicate the passed Content has been updated
 
     public Content() { // Required by ObjectBox when an alternate constructor exists
     }
 
 
-    public ToMany<Attribute> getAttributes() {
+    public RealmResults<Attribute> getAttributes() {
         return this.attributes;
     }
 
-    public void setAttributes(ToMany<Attribute> attributes) {
+    public void setAttributes(RealmResults<Attribute> attributes) {
         this.attributes = attributes;
     }
 
@@ -295,7 +293,7 @@ public class Content implements Serializable {
 
         if (null == url) return "";
 
-        switch (site) {
+        switch (Site.SiteConverter.convertToEntityProperty(site)) {
             case EHENTAI:
             case EXHENTAI:
             case PURURIN:
@@ -397,7 +395,7 @@ public class Content implements Serializable {
 
     public String getGalleryUrl() {
         String galleryConst;
-        switch (site) {
+        switch (getSite()) {
             case HENTAIFOX:
             case PURURIN:
             case IMHENTAI:
@@ -420,39 +418,39 @@ public class Content implements Serializable {
             //    galleryConst = "/view";
             //    break;
             case LUSCIOUS:
-                return site.getUrl().replace("/manga/", "") + url;
+                return getSite().getUrl().replace("/manga/", "") + url;
             case PORNCOMIX:
                 return url;
             default:
                 galleryConst = "";
         }
 
-        return site.getUrl() + (galleryConst + url).replace("//", "/");
+        return getSite().getUrl() + (galleryConst + url).replace("//", "/");
     }
 
     public String getReaderUrl() {
-        switch (site) {
+        switch (getSite()) {
             case HITOMI:
-                return site.getUrl() + "/reader" + url;
+                return getSite().getUrl() + "/reader" + url;
             case TSUMINO:
-                return site.getUrl() + "/Read/Index" + url;
+                return getSite().getUrl() + "/Read/Index" + url;
             case ASMHENTAI:
-                return site.getUrl() + "/gallery" + url + "1/";
+                return getSite().getUrl() + "/gallery" + url + "1/";
             case ASMHENTAI_COMICS:
-                return site.getUrl() + "/gallery" + url;
+                return getSite().getUrl() + "/gallery" + url;
             case PURURIN:
-                return site.getUrl() + "/read/" + url.substring(1).replace("/", "/01/");
+                return getSite().getUrl() + "/read/" + url.substring(1).replace("/", "/01/");
             //case NEXUS:
             //    return site.getUrl() + "/read" + url + "/001";
             case MUSES:
-                return site.getUrl().replace("album", "picture") + "/1";
+                return getSite().getUrl().replace("album", "picture") + "/1";
             case LUSCIOUS:
                 return getGalleryUrl() + "read/";
             case PORNCOMIX:
                 if (getGalleryUrl().contains("/manga")) return getGalleryUrl() + "/p/1/";
                 else return getGalleryUrl() + "#&gid=1&pid=1";
             case HENTAIFOX:
-                return site.getUrl() + "g" + url;
+                return getSite().getUrl() + "g" + url;
             default:
                 return getGalleryUrl();
         }
@@ -532,12 +530,12 @@ public class Content implements Serializable {
     }
 
     public Content setRawUrl(@NonNull String url) {
-        return setUrl(transformRawUrl(site, url));
+        return setUrl(transformRawUrl(getSite(), url));
     }
 
     public Content setUrl(String url) {
         if (url != null && site != null && url.startsWith("http"))
-            this.url = transformRawUrl(site, url);
+            this.url = transformRawUrl(Site.SiteConverter.convertToEntityProperty(site), url);
         else this.url = url;
         populateUniqueSiteId();
         return this;
@@ -599,16 +597,16 @@ public class Content implements Serializable {
     }
 
     public StatusContent getStatus() {
-        return status;
+        return StatusContent.StatusContentConverter.convertToEntityProperty(status);
     }
 
     public Content setStatus(StatusContent status) {
-        this.status = status;
+        this.status = StatusContent.StatusContentConverter.convertToDatabaseValue(status);
         return this;
     }
 
     @Nullable
-    public ToMany<ImageFile> getImageFiles() {
+    public RealmResults<ImageFile> getImageFiles() {
         return imageFiles;
     }
 
@@ -642,7 +640,7 @@ public class Content implements Serializable {
     }
 
     @Nullable
-    public ToMany<ErrorRecord> getErrorLog() {
+    public RealmResults<ErrorRecord> getErrorLog() {
         return errorLog;
     }
 
@@ -730,11 +728,11 @@ public class Content implements Serializable {
     }
 
     public Site getSite() {
-        return site;
+        return Site.SiteConverter.convertToEntityProperty(site);
     }
 
     public Content setSite(Site site) {
-        this.site = site;
+        this.site = Site.SiteConverter.convertToDatabaseValue(site);
         return this;
     }
 
@@ -845,11 +843,11 @@ public class Content implements Serializable {
     }
 
     public Map<String, String> getBookPreferences() {
-        return bookPreferences;
+        return Content.StringMapConverter.convertToEntityProperty(bookPreferences);
     }
 
     public void setBookPreferences(Map<String, String> bookPreferences) {
-        this.bookPreferences = bookPreferences;
+        this.bookPreferences = Content.StringMapConverter.convertToDatabaseValue(bookPreferences);
     }
 
     public int getLastReadPageIndex() {
@@ -907,7 +905,7 @@ public class Content implements Serializable {
     public List<GroupItem> getGroupItems(Grouping grouping) {
         List<GroupItem> result = new ArrayList<>();
         for (GroupItem gi : groupItems)
-            if (gi.group.getTarget().grouping.equals(grouping)) result.add(gi);
+            if (gi.group.grouping.equals(grouping)) result.add(gi);
 
         return result;
     }
@@ -927,7 +925,7 @@ public class Content implements Serializable {
     }
 
     @Nullable
-    public ToMany<Chapter> getChapters() {
+    public RealmResults<Chapter> getChapters() {
         return chapters;
     }
 
@@ -968,17 +966,17 @@ public class Content implements Serializable {
         this.updatedProperties = updatedProperties;
     }
 
-    public ToOne<Content> getContentToReplace() {
+    public Content getContentToReplace() {
         return contentToReplace;
     }
 
     public void setContentIdToReplace(long contentIdToReplace) {
-        this.contentToReplace.setTargetId(contentIdToReplace);
+        this.contentToReplace.setId(contentIdToReplace);
     }
 
-    public static class StringMapConverter implements PropertyConverter<Map<String, String>, String> {
-        @Override
-        public Map<String, String> convertToEntityProperty(String databaseValue) {
+    public static class StringMapConverter {
+
+        public static Map<String, String> convertToEntityProperty(String databaseValue) {
             if (null == databaseValue) return new HashMap<>();
 
             try {
@@ -989,8 +987,7 @@ public class Content implements Serializable {
             }
         }
 
-        @Override
-        public String convertToDatabaseValue(Map<String, String> entityProperty) {
+        public static String convertToDatabaseValue(Map<String, String> entityProperty) {
             return JsonHelper.serializeToJson(entityProperty, MAP_STRINGS);
         }
     }

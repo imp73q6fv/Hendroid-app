@@ -435,7 +435,7 @@ public class ReaderGalleryFragment extends Fragment implements ItemTouchCallback
                 List<ImageFile> chpImgs = c.getImageFiles();
                 if (chpImgs != null) {
                     for (ImageFile img : chpImgs) {
-                        // Reconstitute display order that has been lost because of @Transient property
+                        // Reconstitute display order that has been lost because of @Ignore property
                         img.setDisplayOrder(displayOrder++);
                         if (img.isReadable()) {
                             ImageFileItem holder = new ImageFileItem(img, false);

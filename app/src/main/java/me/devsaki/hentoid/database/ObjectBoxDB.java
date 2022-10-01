@@ -33,7 +33,7 @@ import io.objectbox.android.AndroidObjectBrowser;
 import io.objectbox.query.Query;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.query.QueryCondition;
-import io.objectbox.relation.ToMany;
+import io.objectbox.relation.RealmResults;
 import me.devsaki.hentoid.BuildConfig;
 import me.devsaki.hentoid.core.Consts;
 import me.devsaki.hentoid.database.domains.Attribute;
@@ -161,7 +161,7 @@ public class ObjectBoxDB {
     }
 
     long insertContent(Content content) {
-        ToMany<Attribute> attributes = content.getAttributes();
+        RealmResults<Attribute> attributes = content.getAttributes();
         Box<Attribute> attrBox = store.boxFor(Attribute.class);
         Query<Attribute> attrByUniqueKey = attrBox.query().equal(Attribute_.type, 0).equal(Attribute_.name, "", QueryBuilder.StringOrder.CASE_INSENSITIVE).build();
 

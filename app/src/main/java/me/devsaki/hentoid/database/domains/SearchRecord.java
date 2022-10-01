@@ -4,13 +4,12 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-@Entity
-public class SearchRecord {
+public class SearchRecord extends RealmObject  {
 
-    @Id
+    @PrimaryKey
     public long id;
     private String searchString;
     private String label;

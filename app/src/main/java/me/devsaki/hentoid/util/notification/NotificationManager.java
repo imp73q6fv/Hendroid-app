@@ -13,7 +13,7 @@ public class NotificationManager {
 
     final int notificationId;
 
-    public NotificationManager(@NonNull Context context, @IdRes int notificationId) {
+    public NotificationManager(@NonNull Context context, @PrimaryKeyRes int notificationId) {
         this.context = context;
         this.notificationId = notificationId;
     }

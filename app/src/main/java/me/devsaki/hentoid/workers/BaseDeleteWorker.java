@@ -52,7 +52,7 @@ public abstract class BaseDeleteWorker extends BaseWorker {
 
     protected BaseDeleteWorker(
             @NonNull Context context,
-            @IdRes int serviceId,
+            @PrimaryKeyRes int serviceId,
             @NonNull WorkerParameters parameters) {
         super(context, parameters, serviceId, "delete");
 

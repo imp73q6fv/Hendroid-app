@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'org.sonarqube'
 apply plugin: 'com.mikepenz.aboutlibraries.plugin'
+apply plugin: 'realm-android'
 
 // apply signing configuration if config file exists
 if (file('signing.gradle').exists()) {
@@ -285,6 +286,10 @@ dependencies {
     implementation 'info.debatty:java-string-similarity:2.0.0'
 
     implementation project(path: ':app:customssiv')
+}
+
+realm {
+    syncEnabled = true
 }
 
 sonarqube {

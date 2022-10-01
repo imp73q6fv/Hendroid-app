@@ -5,11 +5,10 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import io.objectbox.annotation.Convert;
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Transient;
-import io.objectbox.relation.ToOne;
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 import me.devsaki.hentoid.core.Consts;
 import me.devsaki.hentoid.enums.StatusContent;
 import me.devsaki.hentoid.util.ContentHelper;
@@ -20,10 +19,9 @@ import me.devsaki.hentoid.util.image.ImageHelper;
 /**
  * Image File builder
  */
-@Entity
-public class ImageFile {
+public class ImageFile extends RealmObject {
 
-    @Id
+    @PrimaryKey
     private long id;
     private Integer order = -1;
     private String url = "";
@@ -33,10 +31,9 @@ public class ImageFile {
     private boolean read = false;
     private boolean favourite = false;
     private boolean isCover = false;
-    @Convert(converter = StatusContent.StatusContentConverter.class, dbType = Integer.class)
-    private StatusContent status = StatusContent.UNHANDLED_ERROR;
-    private ToOne<Content> content;
-    private ToOne<Chapter> chapter;
+    private Integer status = StatusContent.StatusContentConverter.convertToDatabaseValue(StatusContent.UNHANDLED_ERROR);
+    private Content content;
+    private Chapter chapter;
     private String mimeType;
     private long size = 0;
     private long imageHash = 0;
@@ -50,15 +47,15 @@ public class ImageFile {
     // Runtime attributes; no need to expose them nor to persist them
 
     // Display order of the image in the image viewer (view-time only)
-    @Transient
+    @Ignore
     private long uniqueHash = 0;    // cached value of uniqueHash
-    @Transient
+    @Ignore
     private int displayOrder;
     // Backup URL for that picture (download-time only)
-    @Transient
+    @Ignore
     private String backupUrl = "";
     // Has the image been read from a backup URL ? (download-time only)
-    @Transient
+    @Ignore
     private boolean isBackup = false;
 
     // WARNING : Update copy constructor when adding attributes
@@ -127,7 +124,7 @@ public class ImageFile {
 
     private static void init(ImageFile imgFile, int order, StatusContent status, int maxPages, String name) {
         imgFile.order = order;
-        imgFile.status = status;
+        imgFile.status = StatusContent.StatusContentConverter.convertToDatabaseValue(status);
         if (null == name || name.isEmpty()) {
             int nbMaxDigits = (int) (Math.floor(Math.log10(maxPages)) + 1);
             imgFile.computeName(nbMaxDigits);
@@ -186,11 +183,11 @@ public class ImageFile {
     }
 
     public StatusContent getStatus() {
-        return status;
+        return StatusContent.StatusContentConverter.convertToEntityProperty(status);
     }
 
     public ImageFile setStatus(StatusContent status) {
-        this.status = status;
+        this.status = StatusContent.StatusContentConverter.convertToDatabaseValue(status);
         return this;
     }
 
@@ -266,7 +263,7 @@ public class ImageFile {
     }
 
     public ImageFile setContentId(long contentId) {
-        this.content.setTargetId(contentId);
+        this.content.setId(contentId);
         return this;
     }
 
@@ -295,28 +292,30 @@ public class ImageFile {
         this.read = read;
     }
 
-    public ToOne<Content> getContent() {
+    public Content getContent() {
         return content;
     }
 
-    public void setContent(ToOne<Content> content) {
+    public void setContent(Content content) {
         this.content = content;
     }
 
     @Nullable
     public Chapter getLinkedChapter() {
-        return (chapter != null && !chapter.isNull()) ? chapter.getTarget() : null;
+        return (chapter != null) ? chapter : null;
     }
 
     @Nullable
-    public ToOne<Chapter> getChapter() {
+    public Chapter getChapter() {
         return chapter;
     }
 
     public void setChapter(Chapter chapter) {
-        if (null == this.chapter)
-            this.chapter = new ToOne<>(this, ImageFile_.chapter);
-        this.chapter.setTarget(chapter);
+        this.setChapter(chapter);
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(r -> {
+            r.insertOrUpdate(this);
+        });
         uniqueHash = 0;
     }
 
@@ -328,8 +327,8 @@ public class ImageFile {
         String result = "";
         if (ContentHelper.isInLibrary(getStatus())) result = getFileUri();
         if (result.isEmpty()) result = getUrl();
-        if (result.isEmpty() && !getContent().isNull())
-            result = getContent().getTarget().getCoverImageUrl();
+        if (result.isEmpty() && getContent() != null)
+            result = getContent().getCoverImageUrl();
 
         return result;
     }
@@ -353,18 +352,18 @@ public class ImageFile {
                 && Objects.equals(getOrder(), imageFile.getOrder())
                 && Objects.equals(isCover(), imageFile.isCover()) // Sometimes the thumb picture has the same URL as the 1st page
                 && isFavourite() == imageFile.isFavourite()
-                && chapter.getTargetId() == imageFile.chapter.getTargetId();
+                && chapter.getId() == imageFile.chapter.getId();
     }
 
     @Override
     public int hashCode() {
         // Must be an int32, so we're bound to use Objects.hash
-        return Objects.hash(getId(), getPageUrl(), getUrl(), getFileUri(), getOrder(), isCover(), isFavourite(), chapter.getTargetId());
+        return Objects.hash(getId(), getPageUrl(), getUrl(), getFileUri(), getOrder(), isCover(), isFavourite(), chapter.getId());
     }
 
     public long uniqueHash() {
         if (0 == uniqueHash)
-            uniqueHash = Helper.hash64((id + "." + pageUrl + "." + url + "." + order + "." + isCover + "." + chapter.getTargetId()).getBytes());
+            uniqueHash = Helper.hash64((id + "." + pageUrl + "." + url + "." + order + "." + isCover + "." + chapter.getId()).getBytes());
         return uniqueHash;
     }
 }

@@ -152,7 +152,7 @@ public class LibRefreshDialogFragment extends DialogFragment {
         }
     }
 
-    private void onLocationChanged(@IdRes int checkedId) {
+    private void onLocationChanged(@PrimaryKeyRes int checkedId) {
         if (checkedId == R.id.refresh_location_external)
             optionsGroup.setVisibility(View.GONE);
         else optionsGroup.setVisibility(View.VISIBLE);

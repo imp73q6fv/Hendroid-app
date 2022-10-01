@@ -2,7 +2,6 @@ package me.devsaki.hentoid.enums;
 
 import androidx.annotation.StringRes;
 
-import io.objectbox.converter.PropertyConverter;
 import me.devsaki.hentoid.R;
 
 public enum ErrorType {
@@ -50,9 +49,8 @@ public enum ErrorType {
         return engName;
     }
 
-    public static class ErrorTypeConverter implements PropertyConverter<ErrorType, Integer> {
-        @Override
-        public ErrorType convertToEntityProperty(Integer databaseValue) {
+    public static class ErrorTypeConverter {
+        public static ErrorType convertToEntityProperty(Integer databaseValue) {
             if (databaseValue == null) {
                 return null;
             }
@@ -64,8 +62,7 @@ public enum ErrorType {
             return ErrorType.UNDEFINED;
         }
 
-        @Override
-        public Integer convertToDatabaseValue(ErrorType entityProperty) {
+        public static Integer convertToDatabaseValue(ErrorType entityProperty) {
             return entityProperty == null ? null : entityProperty.getCode();
         }
     }

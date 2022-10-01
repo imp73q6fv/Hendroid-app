@@ -2,13 +2,12 @@ package me.devsaki.hentoid.database.domains;
 
 import javax.annotation.Nullable;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-@Entity
-public class ShuffleRecord {
+public class ShuffleRecord extends RealmObject {
 
-    @Id
+    @PrimaryKey
     public long id;
     private Long contentId;
 

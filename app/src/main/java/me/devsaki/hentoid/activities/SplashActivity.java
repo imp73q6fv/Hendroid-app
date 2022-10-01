@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import io.realm.Realm;
 import me.devsaki.hentoid.R;
 import me.devsaki.hentoid.core.AppStartup;
 import me.devsaki.hentoid.database.CollectionDAO;
@@ -39,6 +40,7 @@ public class SplashActivity extends BaseActivity {
         quote.setText(quotes[random]);
 
         Timber.d("Splash / Init");
+        Realm.init(this);
 
         new AppStartup().initApp(
                 this,

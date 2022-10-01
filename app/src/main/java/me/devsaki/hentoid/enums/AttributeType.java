@@ -99,9 +99,8 @@ public enum AttributeType {
         }
     }
 
-    public static class AttributeTypeConverter implements PropertyConverter<AttributeType, Integer> {
-        @Override
-        public AttributeType convertToEntityProperty(Integer databaseValue) {
+    public static class AttributeTypeConverter {
+        public static AttributeType convertToEntityProperty(Integer databaseValue) {
             if (databaseValue == null) {
                 return null;
             }
@@ -113,8 +112,7 @@ public enum AttributeType {
             return AttributeType.TAG;
         }
 
-        @Override
-        public Integer convertToDatabaseValue(AttributeType entityProperty) {
+        public static Integer convertToDatabaseValue(AttributeType entityProperty) {
             return entityProperty == null ? null : entityProperty.getCode();
         }
     }

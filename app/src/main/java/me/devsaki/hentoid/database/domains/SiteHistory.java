@@ -1,32 +1,29 @@
 package me.devsaki.hentoid.database.domains;
 
-import io.objectbox.annotation.Convert;
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import me.devsaki.hentoid.enums.Site;
 
 /**
  * Site browsing history
  */
-@Entity
-public class SiteHistory {
+public class SiteHistory extends RealmObject {
 
-    @Id
+    @PrimaryKey
     public long id;
-    @Convert(converter = Site.SiteConverter.class, dbType = Long.class)
-    private Site site;
+    private Long site;
     private String url; // Last
 
     public SiteHistory() { // Required by ObjectBox when an alternate constructor exists
     }
 
     public SiteHistory(Site site, String url) {
-        this.site = site;
+        this.site = Site.SiteConverter.convertToDatabaseValue(site);
         this.url = url;
     }
 
     public Site getSite() {
-        return site;
+        return Site.SiteConverter.convertToEntityProperty(site);
     }
 
     public String getUrl() {

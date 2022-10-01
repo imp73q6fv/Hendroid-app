@@ -1,11 +1,11 @@
 package me.devsaki.hentoid.database.domains
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import io.realm.RealmObject
+import io.realm.annotations.Ignore
+import io.realm.annotations.PrimaryKey
 import me.devsaki.hentoid.util.Helper
 import kotlin.math.abs
 
-@Entity
 data class DuplicateEntry(
     val referenceId: Long,
     val referenceSize: Long,
@@ -14,25 +14,25 @@ data class DuplicateEntry(
     val titleScore: Float = 0f,
     val coverScore: Float = 0f,
     val artistScore: Float = 0f,
-    @Id var id: Long = 0 // ID is mandatory for ObjectBox to work
-) : Comparable<DuplicateEntry> {
+    @PrimaryKey var id: Long = 0 // ID is mandatory for ObjectBox to work
+) : RealmObject(), Comparable<DuplicateEntry> {
 
-    @Transient
+    @Ignore
     private var totalScore = -1f
 
-    @Transient
+    @Ignore
     var nbDuplicates = 1
 
-    @Transient
+    @Ignore
     var referenceContent: Content? = null
 
-    @Transient
+    @Ignore
     var duplicateContent: Content? = null
 
-    @Transient
+    @Ignore
     var keep: Boolean = true
 
-    @Transient
+    @Ignore
     var isBeingDeleted: Boolean = false
 
 

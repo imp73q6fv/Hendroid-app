@@ -6,51 +6,46 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatter;
 
-import io.objectbox.annotation.Convert;
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.relation.ToOne;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import me.devsaki.hentoid.database.converters.InstantConverter;
 import me.devsaki.hentoid.enums.ErrorType;
 
-@Entity
-public class ErrorRecord {
+public class ErrorRecord extends RealmObject {
 
-    @Id
+    @PrimaryKey
     public long id;
-    private ToOne<Content> content;
-    @Convert(converter = ErrorType.ErrorTypeConverter.class, dbType = Integer.class)
-    private ErrorType type;
+    private Content content;
+    private Integer type;
     private String url;
     private String contentPart;
     private String description;
-    @Convert(converter = InstantConverter.class, dbType = Long.class)
-    private Instant timestamp;
+    private Long timestamp;
 
 
     public ErrorRecord() { // Required by ObjectBox when an alternate constructor exists
     }
 
     public ErrorRecord(ErrorType type, String url, String contentPart, String description, Instant timestamp) {
-        this.type = type;
+        this.type = ErrorType.ErrorTypeConverter.convertToDatabaseValue(type);
         this.url = url;
         this.contentPart = contentPart;
         this.description = description;
-        this.timestamp = timestamp;
+        this.timestamp = InstantConverter.convertToDatabaseValue(timestamp);
     }
 
     public ErrorRecord(long contentId, ErrorType type, String url, String contentPart, String description, Instant timestamp) {
-        content.setTargetId(contentId);
-        this.type = type;
+        content.setId(contentId);
+        this.type = ErrorType.ErrorTypeConverter.convertToDatabaseValue(type);
         this.url = url;
         this.contentPart = contentPart;
         this.description = description;
-        this.timestamp = timestamp;
+        this.timestamp = InstantConverter.convertToDatabaseValue(timestamp);
     }
 
 
     public ErrorType getType() {
-        return type;
+        return ErrorType.ErrorTypeConverter.convertToEntityProperty(type);
     }
 
     public String getUrl() {
@@ -66,14 +61,14 @@ public class ErrorRecord {
     }
 
     public Instant getTimestamp() {
-        return (null == timestamp) ? Instant.EPOCH : timestamp;
+        return (null == timestamp) ? Instant.EPOCH : InstantConverter.convertToEntityProperty(timestamp);
     }
 
-    public ToOne<Content> getContent() {
+    public Content getContent() {
         return content;
     }
 
-    public void setContent(ToOne<Content> content) {
+    public void setContent(Content content) {
         this.content = content;
     }
 
@@ -83,9 +78,9 @@ public class ErrorRecord {
         String timeStr = "";
         if (timestamp != null && !timestamp.equals(Instant.EPOCH)) {
             DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME; // e.g. 2011-12-03T10:15:30
-            timeStr = timestamp.atZone(ZoneId.systemDefault()).format(formatter) + " ";
+            timeStr = getTimestamp().atZone(ZoneId.systemDefault()).format(formatter) + " ";
         }
 
-        return String.format("%s%s - [%s]: %s @ %s", timeStr, contentPart, type.getEngName(), description, url);
+        return String.format("%s%s - [%s]: %s @ %s", timeStr, contentPart, getType().getEngName(), description, url);
     }
 }

@@ -39,7 +39,7 @@ public class ProcessEvent {
      * @param eventType event type code
      * @param step      step of the  process
      */
-    public ProcessEvent(@EventType int eventType, @IdRes int processId, int step, String elementName) {
+    public ProcessEvent(@EventType int eventType, @PrimaryKeyRes int processId, int step, String elementName) {
         this.eventType = eventType;
         this.processId = processId;
         this.step = step;
@@ -60,7 +60,7 @@ public class ProcessEvent {
      * @param elementsKO    elements whose processing has failed so far
      * @param elementsTotal total elements to process
      */
-    public ProcessEvent(@EventType int eventType, @IdRes int processId, int step, int elementsOK, int elementsKO, int elementsTotal) {
+    public ProcessEvent(@EventType int eventType, @PrimaryKeyRes int processId, int step, int elementsOK, int elementsKO, int elementsTotal) {
         this.eventType = eventType;
         this.processId = processId;
         this.step = step;
@@ -82,7 +82,7 @@ public class ProcessEvent {
      * @param elementsKO    elements whose processing has failed so far
      * @param elementsTotal total elements to process
      */
-    public ProcessEvent(@EventType int eventType, @IdRes int processId, int step, @NonNull String name, int elementsOK, int elementsKO, int elementsTotal) {
+    public ProcessEvent(@EventType int eventType, @PrimaryKeyRes int processId, int step, @NonNull String name, int elementsOK, int elementsKO, int elementsTotal) {
         this.eventType = eventType;
         this.processId = processId;
         this.step = step;
@@ -103,7 +103,7 @@ public class ProcessEvent {
      * @param elementsKO    elements whose processing has failed so far
      * @param elementsTotal total elements to process
      */
-    public ProcessEvent(@EventType int eventType, @IdRes int processId, int step, int elementsOK, int elementsKO, int elementsTotal, DocumentFile logFile) {
+    public ProcessEvent(@EventType int eventType, @PrimaryKeyRes int processId, int step, int elementsOK, int elementsKO, int elementsTotal, DocumentFile logFile) {
         this.eventType = eventType;
         this.processId = processId;
         this.step = step;

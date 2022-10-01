@@ -5,25 +5,23 @@ import androidx.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-import io.objectbox.annotation.Backlink;
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.relation.ToMany;
-import io.objectbox.relation.ToOne;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
+import io.realm.annotations.LinkingObjects;
+import io.realm.annotations.PrimaryKey;
 import me.devsaki.hentoid.util.Helper;
 import timber.log.Timber;
 
-@Entity
-public class Chapter {
+public class Chapter extends RealmObject {
 
-    @Id
+    @PrimaryKey
     private long id;
     private Integer order = -1;
     private String url = "";
     private String name = "";
-    private ToOne<Content> content;
-    @Backlink(to = "chapter")
-    private ToMany<ImageFile> imageFiles;
+    private Content content;
+    @LinkingObjects("chapter")
+    private RealmResults<ImageFile> imageFiles;
     private String uniqueId = "";
     private long uploadDate = 0;
 
@@ -88,32 +86,24 @@ public class Chapter {
 
     // NB : Doesn't work when Content is not linked
     public void populateUniqueId() {
-        this.uniqueId = content.getTarget().getUniqueSiteId() + "-" + order;
+        this.uniqueId = content.getUniqueSiteId() + "-" + order;
     }
 
     public Chapter setContentId(long contentId) {
-        this.content.setTargetId(contentId);
+        this.content.setId(contentId);
         return this;
     }
 
-    public ToOne<Content> getContent() {
+    public Content getContent() {
         return content;
     }
 
-    public void setContent(ToOne<Content> content) {
+    public void setContent(Content content) {
         this.content = content;
     }
 
-    public void setContent(Content content) {
-        if (null == this.content) {
-            Timber.d(">> INIT ToONE");
-            this.content = new ToOne<>(this, Chapter_.content);
-        }
-        this.content.setTarget(content);
-    }
-
     @Nullable
-    public ToMany<ImageFile> getImageFiles() {
+    public RealmResults<ImageFile> getImageFiles() {
         return imageFiles;
     }
 

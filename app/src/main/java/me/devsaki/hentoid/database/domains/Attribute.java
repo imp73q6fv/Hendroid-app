@@ -8,14 +8,14 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import io.objectbox.annotation.Backlink;
-import io.objectbox.annotation.Convert;
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Index;
-import io.objectbox.annotation.Transient;
-import io.objectbox.relation.ToMany;
-import io.objectbox.relation.ToOne;
+import io.realm.DynamicRealm;
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.Index;
+import io.realm.annotations.LinkingObjects;
+import io.realm.annotations.PrimaryKey;
 import me.devsaki.hentoid.enums.AttributeType;
 import me.devsaki.hentoid.enums.Site;
 import timber.log.Timber;
@@ -23,30 +23,28 @@ import timber.log.Timber;
 /**
  * Attribute builder
  */
-@Entity
-public class Attribute {
+public class Attribute extends RealmObject {
 
-    @Id
+    @PrimaryKey
     private long id;
     @Index
     private String name;
     @Index
-    @Convert(converter = AttributeType.AttributeTypeConverter.class, dbType = Integer.class)
-    private AttributeType type;
-    @Backlink(to = "attribute")
-    private ToMany<AttributeLocation> locations; // One entry per site
-    private ToOne<Group> group; // Associated group
+    private Integer type;
+    @LinkingObjects("attribute")
+    private RealmResults<AttributeLocation> locations; // One entry per site
+    private Group group; // Associated group
 
     // Runtime attributes; no need to expose them nor to persist them
-    @Transient
+    @Ignore
     private boolean excluded = false;
-    @Transient
+    @Ignore
     private int count = 0;
-    @Transient
+    @Ignore
     private int externalId = 0;
-    @Backlink(to = "attributes") // backed by the to-many relation in Content
-    public ToMany<Content> contents;
-    @Transient
+    @LinkingObjects("attributes") // backed by the to-many relation in Content
+    public RealmResults<Content> contents;
+    @Ignore
     private String displayName = "";
 
 
@@ -54,13 +52,13 @@ public class Attribute {
     }
 
     public Attribute(@Nonnull AttributeType type, @Nonnull String name) {
-        this.type = type;
+        this.type = AttributeType.AttributeTypeConverter.convertToDatabaseValue(type);
         this.name = name;
 
     }
 
     public Attribute(@Nonnull AttributeType type, @Nonnull String name, @Nonnull String url, @Nonnull Site site) {
-        this.type = type;
+        this.type = AttributeType.AttributeTypeConverter.convertToDatabaseValue(type);
         this.name = name;
         computeLocation(site, url);
     }
@@ -68,7 +66,7 @@ public class Attribute {
     public Attribute(@Nonnull DataInputStream input) throws IOException {
         input.readInt(); // file version
         name = input.readUTF();
-        type = AttributeType.searchByCode(input.readInt());
+        type = AttributeType.AttributeTypeConverter.convertToDatabaseValue(AttributeType.searchByCode(input.readInt()));
         count = input.readInt();
         externalId = input.readInt();
         int nbLocations = input.readInt();
@@ -101,7 +99,7 @@ public class Attribute {
     }
 
     public AttributeType getType() {
-        return type;
+        return AttributeType.AttributeTypeConverter.convertToEntityProperty(type);
     }
 
     public Attribute setExcluded(boolean toExclude) {
@@ -114,14 +112,14 @@ public class Attribute {
     }
 
     public void setType(@Nonnull AttributeType type) {
-        this.type = type;
+        AttributeType.AttributeTypeConverter.convertToDatabaseValue(type);
     }
 
-    public ToMany<AttributeLocation> getLocations() {
+    public RealmResults<AttributeLocation> getLocations() {
         return locations;
     }
 
-    public void setLocations(ToMany<AttributeLocation> locations) {
+    public void setLocations(RealmResults<AttributeLocation> locations) {
         this.locations = locations;
     }
 
@@ -134,12 +132,16 @@ public class Attribute {
         return this;
     }
 
-    public ToOne<Group> getGroup() {
+    public Group getGroup() {
         return group;
     }
 
     public void putGroup(@NonNull Group group) {
-        this.group.setAndPutTarget(group);
+        this.group = group;
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(r -> {
+            r.insertOrUpdate(this);
+        });
     }
 
     public Attribute setExternalId(int id) {

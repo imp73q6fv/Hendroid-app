@@ -6,40 +6,44 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import io.objectbox.annotation.Convert;
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.relation.ToOne;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import me.devsaki.hentoid.enums.Site;
 
-@Entity
 // This is a dumb struct class, nothing more
 @SuppressWarnings("squid:S1104")
-public class AttributeLocation {
+public class AttributeLocation extends RealmObject {
 
-    @Id
+    @PrimaryKey
     public long id;
-    @Convert(converter = Site.SiteConverter.class, dbType = Long.class)
-    public Site site;
+
+    public Long site;
     public String url;
-    public ToOne<Attribute> attribute;
+    public Attribute attribute;
 
     public AttributeLocation() { // Required by ObjectBox when an alternate constructor exists
     }
 
     AttributeLocation(Site site, String url) {
-        this.site = site;
+        this.site = Site.SiteConverter.convertToDatabaseValue(site);
         this.url = url;
     }
 
     AttributeLocation(@Nonnull DataInputStream input) throws IOException {
-        this.site = Site.searchByCode(input.readInt());
+        this.site = Site.SiteConverter.convertToDatabaseValue(Site.searchByCode(input.readInt()));
         this.url = input.readUTF();
     }
 
-
     void saveToStream(DataOutputStream output) throws IOException {
-        output.writeInt(null == site ? Site.NONE.getCode() : site.getCode());
+        output.writeInt(null == site ? Site.NONE.getCode() : Site.SiteConverter.convertToEntityProperty(site).getCode());
         output.writeUTF(url);
+    }
+
+    public Site getSite() {
+        return Site.SiteConverter.convertToEntityProperty(site);
+    }
+
+    public void setSite(Site site) {
+        this.site = Site.SiteConverter.convertToDatabaseValue(site);
     }
 }
