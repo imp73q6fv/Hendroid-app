@@ -1,3 +1,7 @@
+Until ObjectBox becomes open-source, this repository will not be updated anymore ( See https://github.com/Nonononoki/Hendroid/issues/70).
+Using [Hentoid](https://github.com/avluis/Hentoid) is recommended.
+
+
 ###### [![](https://github.com/Nonononoki/Hendroid/blob/master/wiki-img/en-flag.svg) English](https://github.com/Nonononoki/Hendroid/tree/master/README.md) | [![](https://github.com/Nonononoki/Hendroid/blob/master/wiki-img/ru-flag.svg) Русский](https://github.com/Nonononoki/Hendroid/tree/master/README-ru.md) | [![](https://github.com/Nonononoki/Hendroid/blob/master/wiki-img/uk-flag.svg) Українська](https://github.com/Nonononoki/Hendroid/tree/master/README-uk.md)
 
 ##### `Hendroid` is a free and open-source Doujinshi & H-Manga archiving and viewing app.
